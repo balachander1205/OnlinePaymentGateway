@@ -1,0 +1,62 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+	<link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+	<script type="text/javascript" src="https://www.tecprocesssolution.com/proto/P2M/server/lib/checkout.js"></script>
+	<form method="post" action="/searchform" th:object="${form_model}">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="contain">Loan Code</label> 
+							<input class="form-control"	type="text" name="loancode"/>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="contain">Application Number</label> 
+							<input class="form-control"	type="text" name="appno"/>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="contain">Customer ID</label> 
+							<input class="form-control"	type="text" name="customerid"/>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label for="contain">Mobile Number</label> 
+							<input class="form-control"	type="text" name="mobileno" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-3">
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">
+							<span class="glyphicon glyphicon-search" aria-hidden="true">&nbsp;Search</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Response Text -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-3">
+					<div class="form-group">${btnSubmit}</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+</body>
+</html>
