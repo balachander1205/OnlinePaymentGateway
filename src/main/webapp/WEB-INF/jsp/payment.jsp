@@ -3,6 +3,7 @@
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<link href="/css/font-awesome.css" rel="stylesheet">
+	<link href="/css/side-slider.css" rel="stylesheet">
 	<script src="/js/jquery-1.11.1.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.validate.min.js"></script>
@@ -226,6 +227,22 @@ body{
 }
 </style>
 <body>
+<div class="sideslider" id="sideslider" style="margin-left: -265px;">
+    <div class="sideslider-tab"><b>Help ?</b></div>
+    <a href="#">
+        <div id="sideslider-smartbutton">
+            <div id="sideslider-text">
+                <span class="header" style="color: #ef2d62;">Welcome</span>
+                <a href="/download/pdf/selfcare"><span class="line" style="color:#001ffd;"><b>Download self-care guide</b></span></a> 
+                 <a href="https://www.dhfl.com/contact-us" target="_blank"><span class="line" style="color:#001ffd;"><b>Contact US</b></span></a> 
+               
+            </div>
+            <div class="sideclear"></div>
+        </div>
+
+    </a>
+    <div class="sideslider-close sideslider-close_en">Close&nbsp;</div>
+</div>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-sm bg-light navbar-light static-top">
 		<img style="margin: 25px;" src="/images/logo.png" alt="Logo"
@@ -971,5 +988,12 @@ body{
 	    max: jQuery.validator.format("Enter amount between maximum and minimum."),
 	    min: jQuery.validator.format("Enter amount between maximum and minimum.")
 	});
+</script>
+<script src="/js/jquery.side-slider.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#sideslider').sideSlider();
+
+    });
 </script>
 </html>
