@@ -241,7 +241,7 @@ body{
         </div>
 
     </a>
-    <div class="sideslider-close sideslider-close_en">Close&nbsp;</div>
+    <div class="sideslider-close sideslider-close_en">Close&nbsp; X</div>
 </div>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-sm bg-light navbar-light static-top">
