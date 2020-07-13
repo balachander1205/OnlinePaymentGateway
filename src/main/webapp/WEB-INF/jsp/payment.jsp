@@ -3,12 +3,22 @@
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<link href="/css/font-awesome.css" rel="stylesheet">
+	<link href="/css/side-slider.css" rel="stylesheet">
 	<script src="/js/jquery-1.11.1.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.validate.min.js"></script>
 	<title>DHFL Online Payment</title>	
 </head>
 <style>
+div#sideslider-smartbutton {
+    font-size: 13px;
+    font-family: inherit;
+    padding: 0;
+    background: white;
+}
+.sideslider-tab {
+    border-radius: 3px;
+}
 div#successReceipt {
     background: white;
     border-top: 3px solid #ed1c24;
@@ -226,6 +236,22 @@ body{
 }
 </style>
 <body>
+<div class="sideslider" id="sideslider" style="margin-left: -265px;">
+    <div class="sideslider-tab"><b>Help ?</b></div>
+    <a>
+        <div id="sideslider-smartbutton">
+            <div id="sideslider-text">
+                <span class="header" style="color: #ed1c24;">Welcome</span>
+                <a href="/download/pdf/selfcare"><span class="line" style="color:#25408e;"><b>Download self-care guide</b></span></a> 
+                 <a href="https://www.dhfl.com/contact-us" target="_blank"><span class="line" style="color:#001ffd;"><b>Contact US</b></span></a> 
+               
+            </div>
+            <div class="sideclear"></div>
+        </div>
+
+    </a>
+    <div class="sideslider-close sideslider-close_en">Close&nbsp;X</div>
+</div>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-sm bg-light navbar-light static-top">
 		<img style="margin: 25px;" src="/images/logo.png" alt="Logo"
@@ -386,6 +412,12 @@ body{
 						<!-- Transaction details table -->
 						<c:if test="${status_msg !=null}">
 							<table class="table trans_tbl">
+								<thead>
+									<tr>
+										<th colspan="2" style="text-align: center">Transaction
+											Details</th>
+									</tr>
+								</thead>
 								<tbody>
 									<tr>
 										<td>Name</td>
@@ -444,6 +476,12 @@ body{
 						<!-- Transaction details table -->
 						<c:if test="${status_msg_fail !=null}">
 							<table class="table trans_tbl">
+								<thead>
+									<tr>
+										<th colspan="2" style="text-align: center">Transaction
+											Details</th>
+									</tr>
+								</thead>
 								<tbody>
 									<tr>
 										<td>Name</td>
@@ -612,7 +650,7 @@ body{
 								</td>
 								<td>
 									<div class="div_amt_details">
-										<a href="#" data-toggle="tooltip" title="${amt_info}" class="amot_info">i</a>
+										<a data-toggle="tooltip" title="${amt_info}" class="amot_info">i</a>
 									</div>
 								</td>							
 							</tr>
@@ -658,7 +696,7 @@ body{
 								</td>
 								<td>
 									<div class="div_amt_details">
-										<a href="#" data-toggle="tooltip" title="${amt_info_charge}" class="amot_info">i</a>
+										<a data-toggle="tooltip" title="${amt_info_charge}" class="amot_info">i</a>
 									</div>
 								</td>							
 							</tr>
@@ -971,5 +1009,12 @@ body{
 	    max: jQuery.validator.format("Enter amount between maximum and minimum."),
 	    min: jQuery.validator.format("Enter amount between maximum and minimum.")
 	});
+</script>
+<script src="/js/jquery.side-slider.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#sideslider').sideSlider();
+
+    });
 </script>
 </html>
