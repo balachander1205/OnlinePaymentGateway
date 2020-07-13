@@ -12,8 +12,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-//@Table(name = "tbl_transaction_reference", schema="DHFLLIVE")
-@Table(name = "tbl_transaction_reference")
+@Table(name = "tbl_transaction_reference", schema="DHFLLIVE")
+//@Table(name = "tbl_transaction_reference")
 public class DHFLTransactionRefrence {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
