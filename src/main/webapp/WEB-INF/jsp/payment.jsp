@@ -238,7 +238,7 @@ body{
 <body>
 <div class="sideslider" id="sideslider" style="margin-left: -265px;">
     <div class="sideslider-tab"><b>Help ?</b></div>
-    <a href="#">
+    <a>
         <div id="sideslider-smartbutton">
             <div id="sideslider-text">
                 <span class="header" style="color: #ed1c24;">Welcome</span>
@@ -412,6 +412,12 @@ body{
 						<!-- Transaction details table -->
 						<c:if test="${status_msg !=null}">
 							<table class="table trans_tbl">
+								<thead>
+									<tr>
+										<th colspan="2" style="text-align: center">Transaction
+											Details</th>
+									</tr>
+								</thead>
 								<tbody>
 									<tr>
 										<td>Name</td>
@@ -470,6 +476,12 @@ body{
 						<!-- Transaction details table -->
 						<c:if test="${status_msg_fail !=null}">
 							<table class="table trans_tbl">
+								<thead>
+									<tr>
+										<th colspan="2" style="text-align: center">Transaction
+											Details</th>
+									</tr>
+								</thead>
 								<tbody>
 									<tr>
 										<td>Name</td>
@@ -638,7 +650,7 @@ body{
 								</td>
 								<td>
 									<div class="div_amt_details">
-										<a href="#" data-toggle="tooltip" title="${amt_info}" class="amot_info">i</a>
+										<a data-toggle="tooltip" title="${amt_info}" class="amot_info">i</a>
 									</div>
 								</td>							
 							</tr>
@@ -684,7 +696,7 @@ body{
 								</td>
 								<td>
 									<div class="div_amt_details">
-										<a href="#" data-toggle="tooltip" title="${amt_info_charge}" class="amot_info">i</a>
+										<a data-toggle="tooltip" title="${amt_info_charge}" class="amot_info">i</a>
 									</div>
 								</td>							
 							</tr>
