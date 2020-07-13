@@ -10,6 +10,15 @@
 	<title>DHFL Online Payment</title>	
 </head>
 <style>
+div#sideslider-smartbutton {
+    font-size: 13px;
+    font-family: inherit;
+    padding: 0;
+    background: white;
+}
+.sideslider-tab {
+    border-radius: 3px;
+}
 div#successReceipt {
     background: white;
     border-top: 3px solid #ed1c24;
@@ -232,8 +241,8 @@ body{
     <a href="#">
         <div id="sideslider-smartbutton">
             <div id="sideslider-text">
-                <span class="header" style="color: #ef2d62;">Welcome</span>
-                <a href="/download/pdf/selfcare"><span class="line" style="color:#001ffd;"><b>Download self-care guide</b></span></a> 
+                <span class="header" style="color: #ed1c24;">Welcome</span>
+                <a href="/download/pdf/selfcare"><span class="line" style="color:#25408e;"><b>Download self-care guide</b></span></a> 
                  <a href="https://www.dhfl.com/contact-us" target="_blank"><span class="line" style="color:#001ffd;"><b>Contact US</b></span></a> 
                
             </div>
@@ -241,7 +250,7 @@ body{
         </div>
 
     </a>
-    <div class="sideslider-close sideslider-close_en">Close&nbsp; X</div>
+    <div class="sideslider-close sideslider-close_en">Close&nbsp;X</div>
 </div>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-sm bg-light navbar-light static-top">
