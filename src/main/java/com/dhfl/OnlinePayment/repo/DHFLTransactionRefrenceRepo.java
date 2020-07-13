@@ -15,14 +15,14 @@ import com.dhfl.OnlinePayment.entity.DHFLTransactionRefrence;
 @Repository
 public interface DHFLTransactionRefrenceRepo extends CrudRepository<DHFLTransactionRefrence, Long>{
 	@Modifying
-	/*@Query(value = "insert into dhfllive.tbl_transaction_reference(clnt_txn_ref, txn_amt, clnt_rqst_meta, tpsl_txn_time, app_no,"
-			+ "loan_code, customer_name, mobile_number, txn_status, txn_type)"
-			+ "values (:clnt_txn_ref, :txn_amt, :clnt_rqst_meta, :tpsl_txn_time, :app_no, :loan_code, :customer_name, :mobile_number,"
-			+ ":txn_status, :txn_type)", nativeQuery = true)*/
-	@Query(value = "insert into tbl_transaction_reference(clnt_txn_ref, txn_amt, clnt_rqst_meta, tpsl_txn_time, app_no,"
+	@Query(value = "insert into dhfllive.tbl_transaction_reference(clnt_txn_ref, txn_amt, clnt_rqst_meta, tpsl_txn_time, app_no,"
 			+ "loan_code, customer_name, mobile_number, txn_status, txn_type, tpsl_txn_id)"
 			+ "values (:clnt_txn_ref, :txn_amt, :clnt_rqst_meta, :tpsl_txn_time, :app_no, :loan_code, :customer_name, :mobile_number,"
 			+ ":txn_status, :txn_type, :tpsl_txn_id)", nativeQuery = true)
+	/*@Query(value = "insert into tbl_transaction_reference(clnt_txn_ref, txn_amt, clnt_rqst_meta, tpsl_txn_time, app_no,"
+			+ "loan_code, customer_name, mobile_number, txn_status, txn_type, tpsl_txn_id)"
+			+ "values (:clnt_txn_ref, :txn_amt, :clnt_rqst_meta, :tpsl_txn_time, :app_no, :loan_code, :customer_name, :mobile_number,"
+			+ ":txn_status, :txn_type, :tpsl_txn_id)", nativeQuery = true)*/
 	@Transactional
 	int insertTransactionRefrence(@Param("clnt_txn_ref") String clnt_txn_ref, 
 			@Param("txn_amt") String txn_amt, @Param("clnt_rqst_meta") String clnt_rqst_meta, 

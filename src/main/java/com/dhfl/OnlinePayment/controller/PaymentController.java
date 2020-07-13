@@ -290,26 +290,37 @@ public class PaymentController {
 			// End of Captcha validation
 			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
 			System.out.println("OTP Data=" + otpData);
+			boolean isInvalidPayMode = false;
 			// Sending OTP message if data is present in DB
 			if (data != null) {
-				// send OTP
-				otpResponse = SendSmsOTP.sendOtpSms(otpData);
-				httpSession.setAttribute("brLoanCode", data.getBrloancode());
-				httpSession.setAttribute("applNo", data.getApplno());
-				httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
-				httpSession.setAttribute("mobileNumber", mobileNo);
-				httpSession.setAttribute(Constants.KEY_CUST_NAME, data.getCustomername());
-				// Over due amount
-				httpSession.setAttribute("minOverDue",
-						data.getMinimumOverdueAmount() != null ? data.getMinimumOverdueAmount() : 0);
-				httpSession.setAttribute("maxOverDue", data.getTotalOverdueEMI() != null ? data.getTotalOverdueEMI() : 0);
-				// Over due charges
-				httpSession.setAttribute("minChargeDue",
-						data.getMinimumChargeAmount() != null ? data.getMinimumChargeAmount() : 0);
-				httpSession.setAttribute("maxChargeDue",
-						data.getTotalChargesAmount() != null ? data.getTotalChargesAmount() : 0);
-				httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
-				logger.debug("SMS OTP Response=" + otpResponse);
+				// Data is present with zero values
+				if(isNull(String.valueOf(data.getTotalChargesAmount())) && data.getTotalChargesAmount() <= 0
+						&& isNull(String.valueOf(data.getMinimumChargeAmount())) && data.getMinimumChargeAmount()<=0
+						&& isNull(String.valueOf(data.getTotalOverdueEMI())) && data.getTotalOverdueEMI()<=0) {
+					redir.addFlashAttribute(Constants.KEY_INVALID_SEARCH_ERROR_MSG,
+							applicationConfig.getInvalidPaymentMode());
+					redirectView = new RedirectView("/payment", true);
+					return redirectView;
+				}else {
+					// send OTP
+					otpResponse = SendSmsOTP.sendOtpSms(otpData);
+					httpSession.setAttribute("brLoanCode", data.getBrloancode());
+					httpSession.setAttribute("applNo", data.getApplno());
+					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
+					httpSession.setAttribute("mobileNumber", mobileNo);
+					httpSession.setAttribute(Constants.KEY_CUST_NAME, data.getCustomername());
+					// Over due amount
+					httpSession.setAttribute("minOverDue",
+							data.getMinimumOverdueAmount() != null ? data.getMinimumOverdueAmount() : 0);
+					httpSession.setAttribute("maxOverDue", data.getTotalOverdueEMI() != null ? data.getTotalOverdueEMI() : 0);
+					// Over due charges
+					httpSession.setAttribute("minChargeDue",
+							data.getMinimumChargeAmount() != null ? data.getMinimumChargeAmount() : 0);
+					httpSession.setAttribute("maxChargeDue",
+							data.getTotalChargesAmount() != null ? data.getTotalChargesAmount() : 0);
+					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
+					logger.debug("SMS OTP Response=" + otpResponse);
+				}
 			} else {
 				String errorMsg = "";
 				if (getOtpDetailsModel.getSearch_param().equalsIgnoreCase("applno")) {

@@ -43,7 +43,7 @@ INSERT INTO `TBL_CUSTOMERS` (`id`, `loancode`, `customerid`, `applicationno`, `c
 -- V1 with blank fields
 CREATE TABLE TBL_DHFL_CUSTOMERS(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    brloancode VARCHAR(11) DEFAULT NULL,
+    brloancode VARCHAR(11) NOT NULL UNIQUE,
     applno VARCHAR(8) DEFAULT NULL,
     customername VARCHAR(200) DEFAULT NULL,
     mobileno VARCHAR(20),
