@@ -1,6 +1,5 @@
 package com.dhfl.OnlinePayment.controller;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,8 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dhfl.OnlinePayment.config.ApplicationConfig;
 
@@ -26,14 +26,18 @@ public class FileDownloadController
 	@Autowired
 	private ApplicationConfig applicationConfig;
 	
-    @RequestMapping("/pdf/selfcare")
+    @RequestMapping(value = "/pdf/selfcare", method = RequestMethod.GET)
+    @ResponseBody
     public void downloadPDFResource( HttpServletRequest request, 
                                      HttpServletResponse response) 
     {
         String dataDirectory = request.getServletContext().getRealPath(applicationConfig.getPdfDocLocation());
+        dataDirectory = applicationConfig.getPdfDocLocation();
+        System.out.println("PDF Location="+dataDirectory);
         Path file = Paths.get(dataDirectory, applicationConfig.getPdfDocName());
         if (Files.exists(file)) 
         {
+        	System.out.println("File Name="+applicationConfig.getPdfDocName()+"| Doc Type="+applicationConfig.getPdfDocName());
             response.setContentType(applicationConfig.getPdfDocType());
             response.addHeader("Content-Disposition", "attachment; filename="+applicationConfig.getPdfDocName());
             try
