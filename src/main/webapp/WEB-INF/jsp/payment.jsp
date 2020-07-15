@@ -522,8 +522,11 @@ body{
 									<span class="" aria-hidden="true">Print</span>
 								</button> -->
 								<button type="submit" id="" onclick="javascript:window.print();"
-									class="glyphicon glyphicon-print btn btn-primary mb-2">
+									class="btn btn-primary mb-2">
 									<span class="" aria-hidden="true">Print</span>
+								</button>
+								<button onclick="window.location='/payment';" type="button" id="btn_make_another_pay" class="btn btn-primary mb-2">
+									<span class="" aria-hidden="true">MAKE ANOTHER PAYMENT</span>
 								</button>
 							</div>
 						</div>

@@ -1,3 +1,4 @@
+---- Table2 ------
 CREATE TABLE TBL_TRANSACTION_DETAILS (
   id INT AUTO_INCREMENT PRIMARY KEY,
   txn_status VARCHAR(20) DEFAULT NULL,
@@ -20,6 +21,32 @@ CREATE TABLE TBL_TRANSACTION_DETAILS (
   loan_code VARCHAR(20) DEFAULT NULL,
   customer_name VARCHAR(200) DEFAULT NULL,
   mobile_number VARCHAR(20) DEFAULT NULL
+);
+-- Table2 --------
+CREATE TABLE TBL_TRANSACTION_REFERENCE_DETAILS (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  txn_status VARCHAR(20) DEFAULT NULL,
+  txn_msg VARCHAR(500) DEFAULT NULL,
+  txn_err_msg VARCHAR(500) DEFAULT NULL,
+  clnt_txn_ref VARCHAR(500) DEFAULT NULL,
+  tpsl_bank_cd VARCHAR(20) DEFAULT NULL,
+  tpsl_txn_id VARCHAR(200) DEFAULT NULL,
+  txn_amt VARCHAR(200) DEFAULT NULL,
+  clnt_rqst_meta VARCHAR(500) DEFAULT NULL,
+  tpsl_txn_time timestamp,
+  bal_amt VARCHAR(200) DEFAULT NULL,
+  card_id VARCHAR(200) DEFAULT NULL,
+  alias_name VARCHAR(200) DEFAULT NULL,
+  BankTransactionID VARCHAR(200) DEFAULT NULL,
+  mandate_reg_no VARCHAR(200) DEFAULT NULL,
+  token VARCHAR(200) DEFAULT NULL,
+  hash VARCHAR(500) DEFAULT NULL,
+  app_no VARCHAR(20) DEFAULT NULL,
+  loan_code VARCHAR(20) DEFAULT NULL,
+  customer_name VARCHAR(200) DEFAULT NULL,
+  mobile_number VARCHAR(20) DEFAULT NULL,
+  clientTxnStatus VARCHAR(10) DEFAULT NULL,
+  payType VARCHAR(10) DEFAULT NULL
 );
 
 CREATE TABLE TBL_TRANSACTION_REFERENCE (
@@ -131,6 +158,32 @@ CREATE TABLE dhfllive.tbl_transaction_details (
   loan_code varchar(20) DEFAULT NULL,
   customer_name varchar(200) DEFAULT NULL,
   mobile_number varchar(20) DEFAULT NULL
+);
+-------------------------------------
+CREATE TABLE dhfllive.TBL_TRANSACTION_REFERENCE_DETAILS (
+  id integer GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) ,
+  txn_status VARCHAR(20) DEFAULT NULL,
+  txn_msg VARCHAR(500) DEFAULT NULL,
+  txn_err_msg VARCHAR(500) DEFAULT NULL,
+  clnt_txn_ref VARCHAR(500) DEFAULT NULL,
+  tpsl_bank_cd VARCHAR(20) DEFAULT NULL,
+  tpsl_txn_id VARCHAR(200) DEFAULT NULL,
+  txn_amt VARCHAR(200) DEFAULT NULL,
+  clnt_rqst_meta VARCHAR(500) DEFAULT NULL,
+  tpsl_txn_time timestamp,
+  bal_amt VARCHAR(200) DEFAULT NULL,
+  card_id VARCHAR(200) DEFAULT NULL,
+  alias_name VARCHAR(200) DEFAULT NULL,
+  BankTransactionID VARCHAR(200) DEFAULT NULL,
+  mandate_reg_no VARCHAR(200) DEFAULT NULL,
+  token VARCHAR(200) DEFAULT NULL,
+  hash VARCHAR(500) DEFAULT NULL,
+  app_no VARCHAR(20) DEFAULT NULL,
+  loan_code VARCHAR(20) DEFAULT NULL,
+  customer_name VARCHAR(200) DEFAULT NULL,
+  mobile_number VARCHAR(20) DEFAULT NULL,
+  clientTxnStatus VARCHAR(10) DEFAULT NULL,
+  payType VARCHAR(10) DEFAULT NULL
 );
 -------------------------------------
 CREATE TABLE DHFLLIVE.TBL_TRANSACTION_REFERENCE (

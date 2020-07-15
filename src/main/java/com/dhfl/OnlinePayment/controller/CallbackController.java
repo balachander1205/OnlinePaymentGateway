@@ -1,5 +1,8 @@
 package com.dhfl.OnlinePayment.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -7,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,15 +19,14 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.dhfl.OnlinePayment.config.ApplicationConfig;
 import com.dhfl.OnlinePayment.config.Constants;
-import com.dhfl.OnlinePayment.entity.DHFLTransactionRefrence;
+import com.dhfl.OnlinePayment.entity.TransactionDetailsEntity;
 import com.dhfl.OnlinePayment.model.DoPaymentModel;
 import com.dhfl.OnlinePayment.model.MessageModel;
 import com.dhfl.OnlinePayment.pg.CommonUtil;
 import com.dhfl.OnlinePayment.pg.MerchantCall;
-import com.dhfl.OnlinePayment.qrcode.QRCode;
 import com.dhfl.OnlinePayment.rmq.RMqSender;
 import com.dhfl.OnlinePayment.service.DHFLCustomersInter;
-import com.dhfl.OnlinePayment.service.DHFLTransactionRefrenceInter;
+import com.dhfl.OnlinePayment.service.TransactionDetailsInter;
 
 @Controller
 public class CallbackController {
@@ -41,13 +42,10 @@ public class CallbackController {
 	private RMqSender messageSender;
 
 	@Autowired
-	private Environment env;
-
-	@Autowired
 	DHFLCustomersInter dhflCustomerInter;
 	
 	@Autowired
-	DHFLTransactionRefrenceInter dhflTxnRefrence;
+	TransactionDetailsInter txnRefDetails;
 
 	@Autowired
 	public CallbackController(final RabbitTemplate rabbitTemplate) {
@@ -90,16 +88,15 @@ public class CallbackController {
 					String txnAmount = respObj.getString("txn_amt");
 					String statusCode = respObj.getString("txn_status");
 					String tpslTxnId = respObj.getString("tpsl_txn_id");
+					System.out.println("TransactionId in callback="+txnId);
 					// Getting transaction reference details
-					DHFLTransactionRefrence txnReference = dhflTxnRefrence.getTxnReference(txnId);
-					int countUpdate = dhflTxnRefrence.updateTxnStatus(Constants.TXN_TYPE_SUCCESS, txnId, tpslTxnId);
-					System.out.println("TxnReferenceDetails= CustomerName="+txnReference.getCustomername()
-										+" Mobile Number="+txnReference.getMobileno());
-					String mobileNumber = txnReference.getMobileno()!=null?txnReference.getMobileno():"";
-					String custName = txnReference.getCustomername()!=null?txnReference.getCustomername():"";
-					String txnType = txnReference.getTxnType()!=null?txnReference.getTxnType():"";
-					String appno = txnReference.getApplno()!=null?txnReference.getApplno():"";
-					String loancode = txnReference.getBrloancode()!=null?txnReference.getBrloancode():"";
+					TransactionDetailsEntity transactionDetailsEntity = txnRefDetails.getTxnReference(txnId);
+					String mobileNumber = transactionDetailsEntity.getMobile_number()!=null?transactionDetailsEntity.getMobile_number():"";
+					String custName = transactionDetailsEntity.getCustomer_name()!=null?transactionDetailsEntity.getCustomer_name():"";
+					String txnType = transactionDetailsEntity.getPayType()!=null?transactionDetailsEntity.getPayType():"";
+					String appno = transactionDetailsEntity.getApp_no()!=null?transactionDetailsEntity.getApp_no():"";
+					String loancode = transactionDetailsEntity.getLoan_code()!=null?transactionDetailsEntity.getLoan_code():"";
+					System.out.println("TxnReferenceDetails= CustomerName="+custName+" Mobile Number="+mobileNumber);
 					// Putting message into QUEUE
 					try {
 						respObj.put("loanCode", loancode);
@@ -109,6 +106,8 @@ public class CallbackController {
 						respObj.put("mobileNumber",mobileNumber);
 						logger.debug("Queue : " + queue + " Exchange : " + exchange + " Routing Key : " + routingKey);
 						messageSender.sendMessage(rabbitTemplate, exchange, routingKey, respObj.toString());
+						logger.debug("Updating TxnDetails for TxnID="+txnId);
+						updateTxnDetails(respObj);
 					} catch (Exception e) {
 						logger.debug("Xception@ sending message to queue ::  " + e);
 					}
@@ -183,9 +182,51 @@ public class CallbackController {
 			httpSession.setAttribute("step_image", applicationConfig.getTransStep3Image());
 		}catch(Exception e) {
 			logger.debug("Exception@/callback="+e);
-			return redirectView = new RedirectView("/payment", true);
+			e.printStackTrace();
+			redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+					applicationConfig.getPgAppTemporarilyUnavailable());
+			redirectView = new RedirectView("/payment", true);
 		}
 		redirectView = new RedirectView("/payment", true);
 		return redirectView;
+	}
+	
+	public int updateTxnDetails(JSONObject responseObj) {
+		int count = 0;
+		try {
+			logger.info("Updating TXN Details into DB=: "+responseObj.toString());
+			String txn_status = responseObj.getString("txn_status")!=null? responseObj.getString("txn_status"):"";
+			String txn_msg = responseObj.getString("txn_msg")!=null? responseObj.getString("txn_msg"):"";
+			String txn_err_msg = responseObj.getString("txn_err_msg")!=null? responseObj.getString("txn_err_msg"):"";
+			String clnt_txn_ref = responseObj.getString("clnt_txn_ref")!=null? responseObj.getString("clnt_txn_ref"):"";
+			String tpsl_bank_cd = responseObj.getString("tpsl_bank_cd")!=null? responseObj.getString("tpsl_bank_cd"):"";
+			String tpsl_txn_id = responseObj.getString("tpsl_txn_id")!=null? responseObj.getString("tpsl_txn_id"):"";
+			String txn_amt = responseObj.getString("txn_amt")!=null? responseObj.getString("txn_amt"):"";
+			String clnt_rqst_meta = responseObj.getString("clnt_rqst_meta")!=null? responseObj.getString("clnt_rqst_meta"):"";
+			String tpsl_txn_time = responseObj.getString("tpsl_txn_time")!=null? responseObj.getString("tpsl_txn_time"):"";
+			//String tpsl_rfnd_id = responseObj.getString("tpsl_rfnd_id")!=null? responseObj.getString("tpsl_rfnd_id"):"";
+			String bal_amt = responseObj.getString("bal_amt")!=null? responseObj.getString("bal_amt"):"";
+			//String card_id = responseObj.getString("card_id")!=null? responseObj.getString("card_id"):"";
+			//String alias_name = responseObj.getString("alias_name")!=null? responseObj.getString("alias_name"):"";
+			String rqst_token = responseObj.getString("rqst_token")!=null? responseObj.getString("rqst_token"):"";
+			String hash = responseObj.getString("hash")!=null? responseObj.getString("hash"):"";
+			//String appNo = responseObj.getString("appNo")!=null? responseObj.getString("appNo"):"";
+			//String loanCode = responseObj.getString("loanCode")!=null? responseObj.getString("loanCode"):"";
+			String custName = responseObj.getString("custName")!=null? responseObj.getString("custName"):"";
+			//String mobileNumber = responseObj.getString("mobileNumber")!=null? responseObj.getString("mobileNumber"):"";
+			String BankTransactionID = tpsl_txn_id;
+			String mandate_reg_no = "";
+			String token = rqst_token;
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+			Date date = dateFormat.parse(tpsl_txn_time);
+			count = txnRefDetails.updateTxnDetails(txn_status, txn_msg, txn_err_msg, tpsl_bank_cd, tpsl_txn_id, txn_amt, 
+														clnt_rqst_meta, date, bal_amt, "null", custName, 
+														BankTransactionID, mandate_reg_no, token, hash, Constants.TXN_TYPE_SUCCESS,
+														clnt_txn_ref);
+		}catch (Exception e) {
+			System.out.println("Exception1@/callback.updateTxnDetails() :="+e);
+			logger.error("Exception1@/callback.updateTxnDetails() :="+e);
+		}
+		return count;
 	}
 }
