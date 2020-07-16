@@ -257,7 +257,7 @@ body{
 		<img style="margin: 25px;" src="/images/logo.png" alt="Logo"
 			style="width:40px;">
 		<div class="rightNav">
-			<span class="call"> <a href="tel:1800223435">1800 22 3435</a>
+			<span class="call"> <a href="tel:180030001919">1800 3000 1919</a>
 			</span>
 		</div>
 	</nav>
@@ -660,7 +660,7 @@ body{
 						</tbody>
 					</table>
 						<button type="submit" class="btn btn-primary mb-2" name="playOverDue">
-							<span class="" aria-hidden="true">Click To Pay</span>
+							<span class="" aria-hidden="true">Continue with Payment</span>
 						</button>
 					</form>
 			</c:if>
@@ -706,7 +706,7 @@ body{
 						</tbody>
 					</table>
 						<button type="submit" class="btn btn-primary mb-2" name="playOverDueCharge">
-							<span class="" aria-hidden="true">Click To Pay</span>
+							<span class="" aria-hidden="true">Continue with Payment</span>
 						</button>
 					</form>
 			</c:if>
@@ -719,12 +719,11 @@ body{
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							<strong>Disclaimer </strong>- " As regards deposit taking
-							activity of the company, the viewers may refer to the
-							advertisement in the newspaper / information furnished in the
-							application form for soliciting public deposits; published on
-							June 28, 2018 in the Free Press Journal and in Navshakti, Mumbai,
-							respectively. The Company is having a valid Certificate of
+							<strong>Disclaimer </strong>- " If the company desires to indicate 
+							directly or indirectly in any advertisement, publicity broucher, etc., 
+							that the company has been granted Certificate of Registration, 
+							such advertisement / broucher should, inter alia, invariably contain 
+							a statement as under: The Company is having a valid Certificate of
 							Registration dated 31/07/2001 issued by the National Housing Bank
 							under Section 29A of the National Housing Bank Act, 1987.
 							However, the National Housing Bank does not accept any
@@ -744,7 +743,7 @@ body{
     // Tool tip logic
     $(document).ready(function(){
 		$('[data-toggle="tooltip"]').tooltip();
-	    // --- Disabling click to pay on submit
+	    // --- Disabling Continue with Payment on submit
 	    $(':input[name="playOverDue"]').prop('disabled', true);
 	    $(':input[name="playOverDueCharge"]').prop('disabled', true);
 	    
@@ -758,7 +757,7 @@ body{
 	    	$("#pay_emi").text(originalvalue);
 	   	});
 	    // Disabling search fields on ready state
-	   	if($('input[id^="brLoanCodeParam"]').is(':checked')){
+	   	if($('input[id="brLoanCodeParam"]').is(':checked')){
 			$(':input[id="brLoanCode"]').prop('disabled', false);
 			$(':input[id="applNo"]').prop('disabled', true);
 		}	
@@ -774,7 +773,7 @@ body{
         });
     });
     // ------------- Selsction of overdue amount
-    $('input[name^="amount"]').change(function () {
+    $('input[name="amount"]').change(function () {
     	setOverDueEmiBlock();
     	/*$(':input[name="playOverDue"]').prop('disabled', false);
     	$(':input[name="playOverDueCharge"]').prop('disabled', true);
@@ -785,7 +784,7 @@ body{
     	//$('input[id^="amount"]').prop('checked', true);
     });
 	// ------------- Selection of Charges
-    $('input[name^="amount_to_pay1"]').change(function () {
+    $('input[name="amount_to_pay1"]').change(function () {
     	setOverDueChargesBlock();
     	/*$(':input[name="playOverDue"]').prop('disabled', true);
     	$(':input[name="playOverDueCharge"]').prop('disabled', false);
@@ -820,7 +819,7 @@ body{
   		$(':input[name="playOverDueCharge"]').prop('disabled', true);
   		$("#pay_emi_text").prop('disabled', true);
   		$("#charge_to_pay").prop('disabled', true);
-  		if($('input[id^="pay_emi"]').is(':checked')){
+  		if($('input[id="pay_emi"]').is(':checked')){
 	    	console.log("Checked pay_emi_text");
 	    	$("#pay_emi_text").prop('disabled', false);
 	    	//$("#charge_to_pay").prop('disabled', true);
@@ -830,7 +829,7 @@ body{
 		          $(':input[name="playOverDue"]').prop('disabled', false);
 		       }
 		    });*/
-	    }if(!$('input[id^="pay_emi"]').is(':checked')){
+	    }if(!$('input[id="pay_emi"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
 		}
@@ -841,7 +840,7 @@ body{
     	$(':input[name="playOverDue"]').prop('disabled', true);
     	$("#charge_to_pay").prop('disabled', true);
     	$("#pay_emi_text").prop('disabled', true);
-  		if($('input[id^="charge_to_pay_r"]').is(':checked')){
+  		if($('input[id="charge_to_pay_r"]').is(':checked')){
 	    	console.log("Checked charge_to_pay");
 	    	$("#charge_to_pay").prop('disabled', false);
 	    	//$("#pay_emi_text").prop('disabled', true);
@@ -851,7 +850,7 @@ body{
 		          $(':input[name="playOverDueCharge"]').prop('disabled', false);
 		       }
 		    });*/
-	    }if(!$('input[id^="charge_to_pay_r"]').is(':checked')){
+	    }if(!$('input[id="charge_to_pay_r"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
 		}
@@ -862,13 +861,13 @@ body{
 		$(':input[name="playOverDueCharge"]').prop('disabled', true);
     	$(':input[name="playOverDue"]').prop('disabled', false);
     	$("#pay_emi_text").prop('disabled', true);
-    	//$('input[name^="amount_to_pay1"]').removeAttr('checked');
+    	//$('input[name="amount_to_pay1"]').removeAttr('checked');
     	$('input:radio[name="amount_to_pay1"]').each(function () { $(this).attr('checked', false); });
     	console.log("Changed overdue radio1");
-    	if($('input[id^="pay_emi"]').is(':checked')){
+    	if($('input[id="pay_emi"]').is(':checked')){
     		console.log("Selected overdue amount");
     		$("#pay_emi_text").prop('disabled', false);
-        }if(!$('input[id^="pay_emi"]').is(':checked')){
+        }if(!$('input[id="pay_emi"]').is(':checked')){
         	console.log("Not Selected overdue amount");
     		$("#pay_emi_text").prop('disabled', true);
         }
@@ -876,13 +875,13 @@ body{
 		$(':input[name="playOverDueCharge"]').prop('disabled', false);
     	$(':input[name="playOverDue"]').prop('disabled', true);
     	$("#charge_to_pay").prop('disabled', true);
-    	//$('input[name^="amount"]').removeAttr('checked');
+    	//$('input[name="amount"]').removeAttr('checked');
     	$('input:radio[name="amount"]').each(function () { $(this).attr('checked', false); });
     	console.log("Changed charges radio1");
-    	if($('input[id^="charge_to_pay_r"]').is(':checked')){
+    	if($('input[id="charge_to_pay_r"]').is(':checked')){
     		console.log("Selected overdue amount");
     		$("#charge_to_pay").prop('disabled', false);
-        }if(!$('input[id^="charge_to_pay_r"]').is(':checked')){
+        }if(!$('input[id="charge_to_pay_r"]').is(':checked')){
         	console.log("Not Selected charges amount");
     		$("#charge_to_pay").prop('disabled', true);
         }

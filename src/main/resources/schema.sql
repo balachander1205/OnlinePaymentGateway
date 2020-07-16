@@ -48,7 +48,7 @@ CREATE TABLE TBL_TRANSACTION_REFERENCE_DETAILS (
   clientTxnStatus VARCHAR(10) DEFAULT NULL,
   payType VARCHAR(10) DEFAULT NULL
 );
-
+select txnRefData from TransactionDetailsEntity txnRefData where txnRefData.clnt_txn_ref = :clnt_txn_ref
 CREATE TABLE TBL_TRANSACTION_REFERENCE (
   id INT AUTO_INCREMENT PRIMARY KEY,
   clnt_txn_ref VARCHAR(500) DEFAULT NULL,
