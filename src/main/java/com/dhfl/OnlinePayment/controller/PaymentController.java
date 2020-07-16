@@ -396,9 +396,11 @@ public class PaymentController {
 			String txnNumber = "TXN"+loanCode+String.valueOf(CURR_TMIES);
 			int count = 0;
 			try {			
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
-				Date txnDate = dateFormat.parse(txnFmtDate);			
+				Date txnDate = dateFormat.parse(txnFmtDate);
+				//SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				//txnDate = dateFormatTS.parse(dateFormatTS.format(txnDate));
 				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
 						txnNumber, "null", "null", amount, custId+ "|" +mobileNo, txnDate, 
 						"null", "null", custId, "null", "null", "null", 

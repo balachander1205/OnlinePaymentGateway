@@ -117,7 +117,8 @@ public class CallbackController {
 					httpSession.setAttribute("txnId", txnId);
 					httpSession.setAttribute("txnTime", txnTime);
 					httpSession.setAttribute("txnAmount", txnAmount);
-					httpSession.setAttribute("loanCode", CommonUtil.maskString(loancode, 0, 6, 'x'));
+					//httpSession.setAttribute("loanCode", CommonUtil.maskString(loancode, 0, 6, 'x'));
+					httpSession.setAttribute("loanCode", loancode);
 					if (statusCode.contains(Constants.PG_0300)) {
 						successMsg = applicationConfig.getTranSuccessMsg() + "<br>" + "\n Transaction Time : "
 								+ respObj.getString("tpsl_txn_time") + "<br>" + "\n Transaction ID : "
@@ -178,6 +179,8 @@ public class CallbackController {
 					}
 				}
 			}
+			httpSession.setAttribute("mobileNumber", "");
+			httpSession.setAttribute("brLoanCode", "");
 			httpSession.setAttribute("disableSearch", "true");
 			httpSession.setAttribute("step_image", applicationConfig.getTransStep3Image());
 		}catch(Exception e) {
@@ -218,7 +221,9 @@ public class CallbackController {
 			String mandate_reg_no = "";
 			String token = rqst_token;
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+			SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			Date date = dateFormat.parse(tpsl_txn_time);
+			date = dateFormatTS.parse(dateFormatTS.format(date));
 			count = txnRefDetails.updateTxnDetails(txn_status, txn_msg, txn_err_msg, tpsl_bank_cd, tpsl_txn_id, txn_amt, 
 														clnt_rqst_meta, date, bal_amt, "null", custName, 
 														BankTransactionID, mandate_reg_no, token, hash, Constants.TXN_TYPE_SUCCESS,
