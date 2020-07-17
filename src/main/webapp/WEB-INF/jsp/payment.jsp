@@ -7,7 +7,7 @@
 	<script src="/js/jquery-1.11.1.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.validate.min.js"></script>
-	<!-- <script src="/js/notAllow.js"></script> -->
+	<script src="/js/notAllow.js"></script>
 	<title>DHFL Online Payment</title>	
 </head>
 <style>
@@ -720,7 +720,7 @@ body{
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							<strong>Disclaimer </strong>- " If the company desires to indicate 
+							<strong>Disclaimer </strong>- "If the company desires to indicate 
 							directly or indirectly in any advertisement, publicity broucher, etc., 
 							that the company has been granted Certificate of Registration, 
 							such advertisement / broucher should, inter alia, invariably contain 
