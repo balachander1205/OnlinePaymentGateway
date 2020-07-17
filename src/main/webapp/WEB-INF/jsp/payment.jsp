@@ -501,7 +501,7 @@ body{
 										<td>${loanCode }</td>
 									</tr>
 									<tr>
-										<td>Amount Paid</td>
+										<td>Amount Not Paid</td>
 										<td>${txnAmount}&nbsp;Rs.</td>
 									</tr>
 									<tr>
