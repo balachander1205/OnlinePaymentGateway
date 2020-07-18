@@ -402,7 +402,7 @@ public class PaymentController {
 				//SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				//txnDate = dateFormatTS.parse(dateFormatTS.format(txnDate));
 				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
-						txnNumber, "null", "null", amount, custId+ "|" +mobileNo, txnDate, 
+						txnNumber, "null", "null", amount, loanCode+"|"+custId+ "|" +mobileNo, txnDate, 
 						"null", "null", custId, "null", "null", "null", 
 						"null", applNo, loanCode, custId, mobileNo, Constants.TXN_TYPE_PENDING, 
 						Constants.TXN_TYPE_OVERDUE);
@@ -500,11 +500,10 @@ public class PaymentController {
 				Date txnDate = dateFormat.parse(txnFmtDate);
 				System.out.println("Insertion 1..."+count);
 				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
-						txnNumber, "null", "null", amount, customerName+ "|" +mobileNo, txnDate, 
+						txnNumber, "null", "null", amount, loanCode+"|"+customerName+ "|" +mobileNo, txnDate, 
 						"null", "null", customerName, "null", "null", "null", 
 						"null", applNo, loanCode, customerName, mobileNo, Constants.TXN_TYPE_PENDING, 
 						Constants.TXN_TYPE_CHARGE);
-				System.out.println("Insertion 2..."+count);
 				System.out.println("Transaction Reference doOverDueChargesPayment Count="+count);
 			}catch(Exception e) {
 				logger.debug("Exception in doOverDueChargesPayment inserting TxnReference Details="+e);

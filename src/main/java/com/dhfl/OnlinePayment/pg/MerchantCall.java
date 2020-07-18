@@ -26,22 +26,23 @@ public class MerchantCall {
 		String txnDate = dateFormat.format(txnDt);
 		
 		logger.info("Transaction Reference Number="+txnNumber);
-		logger.info("Transaction Mobile="+mobileNo+" Loan Code="+loanCode+" Customer Name="+customerName);
+		logger.info("Transaction Mobile=" + mobileNo + "|Loan Code=" + loanCode + "|Customer Name=" + customerName
+				+ "|TxnAmount=" + amount + "|MarchentCode=" + merchantCode+"|webServiceUrl="+merchantWebServiceURl);
 		TransactionRequestBean objTransactionRequestBean = new TransactionRequestBean();
 		objTransactionRequestBean.setStrRequestType("T");
-		objTransactionRequestBean.setStrMerchantCode("T519384");
+		objTransactionRequestBean.setStrMerchantCode(merchantCode);
 		objTransactionRequestBean.setMerchantTxnRefNumber(txnNumber);
 		// TXN0052134656
 		objTransactionRequestBean.setStrAmount(amount);
 		objTransactionRequestBean.setStrCurrencyCode("INR");
-		//objTransactionRequestBean.setStrITC("");
+		objTransactionRequestBean.setStrITC(loanCode);
 		//objTransactionRequestBean.setStrReturnURL("https://www.tekprocess.co.in/MerchantIntegrationClient/Responsepayload.jsp");
 		objTransactionRequestBean.setStrReturnURL(callbackUrl);
 		objTransactionRequestBean.setStrS2SReturnURL(callbackUrl);
 		objTransactionRequestBean.setStrShoppingCartDetails("FIRST_1.0_0.0");
 		objTransactionRequestBean.setTxnDate(txnDate);
 		//objTransactionRequestBean.setStrBankCode("");
-		objTransactionRequestBean.setWebServiceLocator("https://www.tpsl-india.in/PaymentGateway/services/TransactionDetailsNew");
+		objTransactionRequestBean.setWebServiceLocator(merchantWebServiceURl);
 		objTransactionRequestBean.setCustID("");
 		objTransactionRequestBean.setStrTPSLTxnID("");
 		objTransactionRequestBean.setStrMobileNumber(mobileNo);
