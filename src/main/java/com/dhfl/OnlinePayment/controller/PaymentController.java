@@ -35,9 +35,7 @@ import com.dhfl.OnlinePayment.pg.MerchantCall;
 import com.dhfl.OnlinePayment.pg.SendSmsOTP;
 import com.dhfl.OnlinePayment.rmq.RMqSender;
 import com.dhfl.OnlinePayment.service.DHFLCustomersInter;
-import com.dhfl.OnlinePayment.service.DHFLTransactionRefrenceInter;
-
-import javassist.bytecode.stackmap.BasicBlock.Catch;
+import com.dhfl.OnlinePayment.service.TransactionDetailsInter;
 
 @Controller
 public class PaymentController {
@@ -59,8 +57,8 @@ public class PaymentController {
 	DHFLCustomersInter dhflCustomerInter;
 	
 	@Autowired
-	DHFLTransactionRefrenceInter dhflTxnRefInter;
-	
+	TransactionDetailsInter txnDetailsInter;
+		
 	@Autowired
 	public PaymentController(final RabbitTemplate rabbitTemplate) {
 		this.rabbitTemplate = rabbitTemplate;
@@ -189,7 +187,9 @@ public class PaymentController {
 	
 					} catch (Exception e) {
 						logger.debug("Xception at /searchform data : " + e);
-						redirectView = new RedirectView("/exception", true);
+						redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+								applicationConfig.getPgAppTemporarilyUnavailable());
+						redirectView = new RedirectView("/payment", true);
 					}
 					return redirectView;
 				} else {
@@ -210,7 +210,9 @@ public class PaymentController {
 			}
 		}catch(Exception e) {
 			logger.debug("Exception@/getdetails="+e);
-			redirectView = new RedirectView("/exception", true);
+			redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+					applicationConfig.getPgAppTemporarilyUnavailable());
+			redirectView = new RedirectView("/payment", true);
 		}
 		return redirectView;
 	}
@@ -290,26 +292,37 @@ public class PaymentController {
 			// End of Captcha validation
 			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
 			System.out.println("OTP Data=" + otpData);
+			boolean isInvalidPayMode = false;
 			// Sending OTP message if data is present in DB
 			if (data != null) {
-				// send OTP
-				otpResponse = SendSmsOTP.sendOtpSms(otpData);
-				httpSession.setAttribute("brLoanCode", data.getBrloancode());
-				httpSession.setAttribute("applNo", data.getApplno());
-				httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
-				httpSession.setAttribute("mobileNumber", mobileNo);
-				httpSession.setAttribute(Constants.KEY_CUST_NAME, data.getCustomername());
-				// Over due amount
-				httpSession.setAttribute("minOverDue",
-						data.getMinimumOverdueAmount() != null ? data.getMinimumOverdueAmount() : 0);
-				httpSession.setAttribute("maxOverDue", data.getTotalOverdueEMI() != null ? data.getTotalOverdueEMI() : 0);
-				// Over due charges
-				httpSession.setAttribute("minChargeDue",
-						data.getMinimumChargeAmount() != null ? data.getMinimumChargeAmount() : 0);
-				httpSession.setAttribute("maxChargeDue",
-						data.getTotalChargesAmount() != null ? data.getTotalChargesAmount() : 0);
-				httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
-				logger.debug("SMS OTP Response=" + otpResponse);
+				// Data is present with zero values
+				if(isNull(String.valueOf(data.getTotalChargesAmount())) && data.getTotalChargesAmount() <= 0
+						&& isNull(String.valueOf(data.getMinimumChargeAmount())) && data.getMinimumChargeAmount()<=0
+						&& isNull(String.valueOf(data.getTotalOverdueEMI())) && data.getTotalOverdueEMI()<=0) {
+					redir.addFlashAttribute(Constants.KEY_INVALID_SEARCH_ERROR_MSG,
+							applicationConfig.getInvalidPaymentMode());
+					redirectView = new RedirectView("/payment", true);
+					return redirectView;
+				}else {
+					// send OTP
+					otpResponse = SendSmsOTP.sendOtpSms(otpData);
+					httpSession.setAttribute("brLoanCode", data.getBrloancode());
+					httpSession.setAttribute("applNo", data.getApplno());
+					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
+					httpSession.setAttribute("mobileNumber", mobileNo);
+					httpSession.setAttribute(Constants.KEY_CUST_NAME, data.getCustomername());
+					// Over due amount
+					httpSession.setAttribute("minOverDue",
+							data.getMinimumOverdueAmount() != null ? data.getMinimumOverdueAmount() : 0);
+					httpSession.setAttribute("maxOverDue", data.getTotalOverdueEMI() != null ? data.getTotalOverdueEMI() : 0);
+					// Over due charges
+					httpSession.setAttribute("minChargeDue",
+							data.getMinimumChargeAmount() != null ? data.getMinimumChargeAmount() : 0);
+					httpSession.setAttribute("maxChargeDue",
+							data.getTotalChargesAmount() != null ? data.getTotalChargesAmount() : 0);
+					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
+					logger.debug("SMS OTP Response=" + otpResponse);
+				}
 			} else {
 				String errorMsg = "";
 				if (getOtpDetailsModel.getSearch_param().equalsIgnoreCase("applno")) {
@@ -338,7 +351,9 @@ public class PaymentController {
 			}
 		}catch(Exception e) {
 			logger.debug("Exception@/doOverDueEmiPayment="+e);
-			redirectView = new RedirectView("/exception", true);
+			redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+					applicationConfig.getPgAppTemporarilyUnavailable());
+			redirectView = new RedirectView("/payment", true);
 		}
 		return redirectView;
 	}
@@ -381,16 +396,22 @@ public class PaymentController {
 			String txnNumber = "TXN"+loanCode+String.valueOf(CURR_TMIES);
 			int count = 0;
 			try {			
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
-				Date txnDate = dateFormat.parse(txnFmtDate);			
-				count = dhflTxnRefInter.insertTransactionDetails(txnNumber, amount, 
-						mobileNo, applNo, loanCode, custId, txnDate, mobileNo, Constants.TXN_TYPE_PENDING, 
-						Constants.TXN_TYPE_OVERDUE, "");
+				Date txnDate = dateFormat.parse(txnFmtDate);
+				//SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				//txnDate = dateFormatTS.parse(dateFormatTS.format(txnDate));
+				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
+						txnNumber, "null", "null", amount, loanCode+"|"+custId+ "|" +mobileNo, txnDate, 
+						"null", "null", custId, "null", "null", "null", 
+						"null", applNo, loanCode, custId, mobileNo, Constants.TXN_TYPE_PENDING, 
+						Constants.TXN_TYPE_OVERDUE);
 				System.out.println("Transaction Reference doOverDueEmiPayment Count="+count+" txnFmtDate="+txnFmtDate);
 			}catch(Exception e) {
 				logger.debug("Exception in doOverDueEMIPayment inserting TxnReference Details="+e);
-				redirectView = new RedirectView("/exception", true);
+				redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+						applicationConfig.getPgAppTemporarilyUnavailable());
+				redirectView = new RedirectView("/payment", true);
 			}
 			if(count>=1) {
 				logger.debug("Transaction Reference Inserted TxnNumber=" + txnNumber + " |Amount=" + amount
@@ -400,7 +421,7 @@ public class PaymentController {
 				if ((Long.parseLong(amount) <= maxAmount)) {
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, custId, loanCode, callbackUrl,
 							merchantCode, merchantWsUrl, merchantCur, txnNumber);
-					logger.debug("Loan Amount Entered=" + amount + "|Loan Payment TxnURL=" + paymentUrl);
+					logger.debug("Redirecting to Payment="+paymentUrl+" with amount=" + Float.parseFloat(amount) + " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);
 				} else {
 					logger.debug("Entered invalid loan amount=" + amount + "|Mobile Number=" + mobileNo + "|minAmount="
@@ -428,7 +449,9 @@ public class PaymentController {
 			}
 		}catch(Exception e) {
 			logger.debug("Exception@/doOverDueEmiPayment="+e);
-			redirectView = new RedirectView("/exception", true);
+			redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+					applicationConfig.getPgAppTemporarilyUnavailable());
+			redirectView = new RedirectView("/payment", true);
 		}
 		return redirectView;
 	}
@@ -475,14 +498,18 @@ public class PaymentController {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
 				Date txnDate = dateFormat.parse(txnFmtDate);
-				//Date txnDate = dateFormat.parse((String)dateFormat.format(curDate));			
-				count = dhflTxnRefInter.insertTransactionDetails(txnNumber, amount, 
-						mobileNo, applNo, loanCode, customerName, txnDate, mobileNo, Constants.TXN_TYPE_PENDING,
-						Constants.TXN_TYPE_CHARGE, "");
+				System.out.println("Insertion 1..."+count);
+				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
+						txnNumber, "null", "null", amount, loanCode+"|"+customerName+ "|" +mobileNo, txnDate, 
+						"null", "null", customerName, "null", "null", "null", 
+						"null", applNo, loanCode, customerName, mobileNo, Constants.TXN_TYPE_PENDING, 
+						Constants.TXN_TYPE_CHARGE);
 				System.out.println("Transaction Reference doOverDueChargesPayment Count="+count);
 			}catch(Exception e) {
 				logger.debug("Exception in doOverDueChargesPayment inserting TxnReference Details="+e);
-				redirectView = new RedirectView("/exception", true);
+				redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+						applicationConfig.getPgAppTemporarilyUnavailable());
+				redirectView = new RedirectView("/payment", true);
 			}
 			
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
@@ -492,9 +519,8 @@ public class PaymentController {
 				if (Long.parseLong(amount) <= maxAmount) {
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, customerName, loanCode,
 							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber);
-					logger.debug("Loan amount=" + Float.parseFloat(amount) + " : MAx Amount=" + maxAmount);
+					logger.debug("Redirecting to Payment="+paymentUrl+" with amount=" + Float.parseFloat(amount) + " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);
-					logger.debug("Loan amount=" + Float.parseFloat(amount) + " : Max Amount=" + maxAmount);
 				} else {
 					logger.debug("Entered invalid loan amount=" + amount + "|Mobile Number=" + mobileNo + "|minAmount="
 							+ minAmount + "|maxAmount=" + maxAmount + "|Type=charge");
@@ -521,7 +547,9 @@ public class PaymentController {
 			}
 		}catch(Exception e){
 			logger.debug("Exception@/doPaymentCharges="+e);
-			redirectView = new RedirectView("/exception", true);
+			redir.addFlashAttribute(Constants.KEY_ERROR__TEMP_UNAVAILABLE_MSG,
+					applicationConfig.getPgAppTemporarilyUnavailable());
+			redirectView = new RedirectView("/payment", true);
 		}	
 		return redirectView;
 	}

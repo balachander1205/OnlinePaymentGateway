@@ -114,6 +114,51 @@ public class ApplicationConfig {
 	@Value("${pg.app.temp.unavailable}")
 	public String pgAppTemporarilyUnavailable;
 	
+	// PDF document properties
+	@Value("${pg.self.help.document.location}")
+	public String pdfDocLocation;
+	
+	@Value("${pg.self.help.document.name}")
+	public String pdfDocName;
+	
+	@Value("${pg.self.help.document.type}")
+	public String pdfDocType;
+
+	@Value("${pg.trans.invalid.pay.mode}")
+	public String invalidPaymentMode;
+	
+	public String getInvalidPaymentMode() {
+		return invalidPaymentMode;
+	}
+
+	public void setInvalidPaymentMode(String invalidPaymentMode) {
+		this.invalidPaymentMode = invalidPaymentMode;
+	}
+
+	public String getPdfDocLocation() {
+		return pdfDocLocation;
+	}
+
+	public void setPdfDocLocation(String pdfDocLocation) {
+		this.pdfDocLocation = pdfDocLocation;
+	}
+
+	public String getPdfDocName() {
+		return pdfDocName;
+	}
+
+	public void setPdfDocName(String pdfDocName) {
+		this.pdfDocName = pdfDocName;
+	}
+
+	public String getPdfDocType() {
+		return pdfDocType;
+	}
+
+	public void setPdfDocType(String pdfDocType) {
+		this.pdfDocType = pdfDocType;
+	}
+
 	public String getPgAppTemporarilyUnavailable() {
 		return pgAppTemporarilyUnavailable;
 	}

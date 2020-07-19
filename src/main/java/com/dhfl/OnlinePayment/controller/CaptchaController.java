@@ -2,6 +2,9 @@ package com.dhfl.OnlinePayment.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import com.sun.media.jfxmedia.logging.Logger;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -27,7 +30,9 @@ public class CaptchaController {
 		int iWidth = 150;
 		Font fntStyle1 = new Font("Arial", Font.BOLD, 30);
 		Random randChars = new Random();
-		String sImageCode = (Long.toString(Math.abs(randChars.nextLong()), 36)).substring(0, iTotalChars);
+		//String sImageCode = (Long.toString(Math.abs(randChars.nextLong()), 36)).substring(0, iTotalChars);
+		String sImageCode = getCaptcha();
+		System.out.println("Image COde="+sImageCode);
 		BufferedImage biImage = new BufferedImage(iWidth, iHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2dImage = (Graphics2D) biImage.getGraphics();
 		int iCircle = 15;
@@ -52,4 +57,25 @@ public class CaptchaController {
 		HttpSession session = request.getSession();
 		session.setAttribute("captcha_security", sImageCode);
 	}
+	
+	public static String getCaptcha() {
+		StringBuilder sb = null;
+		try {
+			int n = 6;
+			// chose a Character random from this String
+			String AlphaNumericString = "0123456789";
+			// create StringBuffer size of AlphaNumericString
+			sb = new StringBuilder(n);
+			for (int i = 0; i < n; i++) {
+				// generate a random number between
+				// 0 to AlphaNumericString variable length
+				int index = (int) (AlphaNumericString.length() * Math.random());
+				// add Character one by one in end of sb
+				sb.append(AlphaNumericString.charAt(index));
+			}
+		}catch (Exception e) {
+			System.out.println("Exception@getCaptcha="+e);
+		}
+		return sb.toString();
+	} 
 }
