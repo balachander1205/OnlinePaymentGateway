@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -552,5 +553,33 @@ public class PaymentController {
 			redirectView = new RedirectView("/payment", true);
 		}	
 		return redirectView;
+	}
+	
+	// Resend OTP
+	@RequestMapping(value = "/resendOtp", method = RequestMethod.POST)
+	@ResponseBody
+	public String resendOTP(RedirectAttributes redir,
+			HttpSession httpSession, HttpServletRequest request) {
+		String response = "";
+		try {
+			String otpUrl = applicationConfig.getOtpUrl();
+			String otpMSg = applicationConfig.getOtpMsg();
+			String mobileNo = httpSession.getAttribute("mobileNumber")!=null?(String)httpSession.getAttribute("mobileNumber"):"8919180283";
+			String otpResponse = "";
+			String otp = SendSmsOTP.getOtp();
+			httpSession.setAttribute("otp", otp);
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
+			System.out.println("Resend OTP Data=" + otpData);
+			otpResponse = SendSmsOTP.sendOtpSms(otpData);
+			if(otpResponse.contains("200")) {
+				response = applicationConfig.getOtpSentMessage();
+			}else {
+				response = applicationConfig.getOtpUnavailable();
+			}
+		}catch (Exception e) {
+			System.out.println("Exception@resendOTP()="+e);
+			response = applicationConfig.getOtpUnavailable();
+		}
+		return response;
 	}
 }

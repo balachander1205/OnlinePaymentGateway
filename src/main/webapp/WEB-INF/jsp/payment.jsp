@@ -94,7 +94,7 @@ img#img_captcha_refresh {
     padding: 2px 0px 2px 0px;
 }
 img#img_captcha {
-    width: 70%;
+    /*width: 70%;*/
     height: 5%;
     margin-top: 1px;
     border-radius: 3px;
@@ -338,6 +338,8 @@ body{
 								<script>
 									$('#form_search :input').prop('disabled',true);
 									$('#brLoanCode').prop('disabled', true);
+									$('#mobileNumber').prop('disabled', true);
+									$('#captcha').prop('disabled', true);
 								</script>
 								<div id="otpSentResponse" style="text-align: center; color:green;">${otpSentResponse}</div>
 							</c:if>
@@ -775,10 +777,12 @@ body{
     });
     // ------------- Selsction of overdue amount
     $('input[name="amount"]').change(function () {
+    	$('input[name="amount_to_pay1"]').prop('checked', false);
     	setOverDueEmiBlock();
     });
 	// ------------- Selection of Charges
     $('input[name="amount_to_pay1"]').change(function () {
+    	$('input[name="amount"]').prop('checked', false);
     	setOverDueChargesBlock();
     });
     // ----------------
@@ -791,13 +795,6 @@ body{
   		if($('input[id="pay_emi"]').is(':checked')){
 	    	console.log("Checked pay_emi_text");
 	    	$("#pay_emi_text").prop('disabled', false);
-	    	//$("#charge_to_pay").prop('disabled', true);
-	    	//$(':input[name="playOverDue"]').prop('disabled', false);
-		    /*$('input[name="amount_to_pay"]').keyup(function() {
-		       if($(this).val() != '') {
-		          $(':input[name="playOverDue"]').prop('disabled', false);
-		       }
-		    });*/
 	    }if(!$('input[id="pay_emi"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
@@ -812,13 +809,6 @@ body{
   		if($('input[id="charge_to_pay_r"]').is(':checked')){
 	    	console.log("Checked charge_to_pay");
 	    	$("#charge_to_pay").prop('disabled', false);
-	    	//$("#pay_emi_text").prop('disabled', true);
-	    	//$(':input[name="playOverDueCharge"]').prop('disabled', false);
-		    /*$('input[name="amount_to_pay_charge"]').keyup(function() {
-		       if($(this).val() != '') {
-		          $(':input[name="playOverDueCharge"]').prop('disabled', false);
-		       }
-		    });*/
 	    }if(!$('input[id="charge_to_pay_r"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
@@ -838,31 +828,38 @@ body{
 	})*/
 
 	// Changing Placeholder text
-	$('input[name^="search_param"]').change(
+	$('input[name="search_param"]').change(
 		function() {
-			if ($('input[id^="brLoanCodeParam"]').is(':checked')) {
-				$("input[id^='brLoanCode']").attr('placeholder',
+			if ($('input[id="brLoanCodeParam"]').is(':checked')) {
+				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter 11 digit loan code');
-				$("input[id^='brLoanCode']").attr('maxlength', '11');
+				$("input[id='brLoanCode']").attr('maxlength', '11');
 			}
-			if ($('input[id^="appNoParam"]').is(':checked')) {
-				$("input[id^='brLoanCode']").attr('placeholder',
+			if ($('input[id="appNoParam"]').is(':checked')) {
+				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter Application Number');
-				$("input[id^='brLoanCode']").attr('maxlength', '8');
+				$("input[id='brLoanCode']").attr('maxlength', '8');
 			}
 		});
 	// Refresh Captcha
 	$('#img_captcha_refresh').click(function() {
 		var d = new Date();
-		//console.log("Clicked captcha refresh="+d);
 		$('#img_captcha').attr('src', '/captcha?' + d.getTime());
 	});
 	// onclick resend OTP
 	$("#resendOtpBtn").click(function(){
-		$('#form_search :input').prop('disabled', false);
-		$('input[id^="brLoanCode"]').prop('disabled', false);
+		/*$('#form_search :input').prop('disabled', false);
+		$('input[id="brLoanCode"]').prop('disabled', false);
 		$('#otpValidateForm').empty();
-		$('#otpSentResponse').empty();
+		$('#otpSentResponse').empty();*/
+		$.ajax({url: "/resendOtp", 
+			method : "POST",
+			success: function(result){
+				alert(result);
+			},fail: function(data, error){
+				console.log(data+ " Erro:"+error);
+			}
+		});
 	});
 	// Search Form validation
 
