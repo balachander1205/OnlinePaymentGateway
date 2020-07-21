@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -396,11 +397,13 @@ public class PaymentController {
 			String txnNumber = "TXN"+loanCode+String.valueOf(CURR_TMIES);
 			int count = 0;
 			try {			
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
-				Date txnDate = dateFormat.parse(txnFmtDate);			
+				Date txnDate = dateFormat.parse(txnFmtDate);
+				//SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				//txnDate = dateFormatTS.parse(dateFormatTS.format(txnDate));
 				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
-						txnNumber, "null", "null", amount, custId+ "|" +mobileNo, txnDate, 
+						txnNumber, "null", "null", amount, loanCode+"|"+custId+ "|" +mobileNo, txnDate, 
 						"null", "null", custId, "null", "null", "null", 
 						"null", applNo, loanCode, custId, mobileNo, Constants.TXN_TYPE_PENDING, 
 						Constants.TXN_TYPE_OVERDUE);
@@ -498,11 +501,10 @@ public class PaymentController {
 				Date txnDate = dateFormat.parse(txnFmtDate);
 				System.out.println("Insertion 1..."+count);
 				count = txnDetailsInter.insertTransactionDetails("null", "null", "null", 
-						txnNumber, "null", "null", amount, customerName+ "|" +mobileNo, txnDate, 
+						txnNumber, "null", "null", amount, loanCode+"|"+customerName+ "|" +mobileNo, txnDate, 
 						"null", "null", customerName, "null", "null", "null", 
 						"null", applNo, loanCode, customerName, mobileNo, Constants.TXN_TYPE_PENDING, 
 						Constants.TXN_TYPE_CHARGE);
-				System.out.println("Insertion 2..."+count);
 				System.out.println("Transaction Reference doOverDueChargesPayment Count="+count);
 			}catch(Exception e) {
 				logger.debug("Exception in doOverDueChargesPayment inserting TxnReference Details="+e);
@@ -551,5 +553,33 @@ public class PaymentController {
 			redirectView = new RedirectView("/payment", true);
 		}	
 		return redirectView;
+	}
+	
+	// Resend OTP
+	@RequestMapping(value = "/resendOtp", method = RequestMethod.POST)
+	@ResponseBody
+	public String resendOTP(RedirectAttributes redir,
+			HttpSession httpSession, HttpServletRequest request) {
+		String response = "";
+		try {
+			String otpUrl = applicationConfig.getOtpUrl();
+			String otpMSg = applicationConfig.getOtpMsg();
+			String mobileNo = httpSession.getAttribute("mobileNumber")!=null?(String)httpSession.getAttribute("mobileNumber"):"8919180283";
+			String otpResponse = "";
+			String otp = SendSmsOTP.getOtp();
+			httpSession.setAttribute("otp", otp);
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
+			System.out.println("Resend OTP Data=" + otpData);
+			otpResponse = SendSmsOTP.sendOtpSms(otpData);
+			if(otpResponse.contains("200")) {
+				response = applicationConfig.getOtpSentMessage();
+			}else {
+				response = applicationConfig.getOtpUnavailable();
+			}
+		}catch (Exception e) {
+			System.out.println("Exception@resendOTP()="+e);
+			response = applicationConfig.getOtpUnavailable();
+		}
+		return response;
 	}
 }

@@ -1,6 +1,7 @@
 package com.dhfl.OnlinePayment.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -117,7 +118,8 @@ public class CallbackController {
 					httpSession.setAttribute("txnId", txnId);
 					httpSession.setAttribute("txnTime", txnTime);
 					httpSession.setAttribute("txnAmount", txnAmount);
-					httpSession.setAttribute("loanCode", CommonUtil.maskString(loancode, 0, 6, 'x'));
+					//httpSession.setAttribute("loanCode", CommonUtil.maskString(loancode, 0, 6, 'x'));
+					httpSession.setAttribute("loanCode", loancode);
 					if (statusCode.contains(Constants.PG_0300)) {
 						successMsg = applicationConfig.getTranSuccessMsg() + "<br>" + "\n Transaction Time : "
 								+ respObj.getString("tpsl_txn_time") + "<br>" + "\n Transaction ID : "
@@ -178,6 +180,8 @@ public class CallbackController {
 					}
 				}
 			}
+			httpSession.setAttribute("mobileNumber", "");
+			httpSession.setAttribute("brLoanCode", "");
 			httpSession.setAttribute("disableSearch", "true");
 			httpSession.setAttribute("step_image", applicationConfig.getTransStep3Image());
 		}catch(Exception e) {
@@ -218,7 +222,15 @@ public class CallbackController {
 			String mandate_reg_no = "";
 			String token = rqst_token;
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+			SimpleDateFormat dateFormatTS = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			if (tpsl_txn_time == "NA" || tpsl_txn_time == "" || tpsl_txn_time == null) {
+				long curTimeMiles = System.currentTimeMillis();
+				Date curDateTime = new Date(curTimeMiles);
+				tpsl_txn_time = dateFormatTS.format(curDateTime);
+			}
 			Date date = dateFormat.parse(tpsl_txn_time);
+			date = set530HHToDate(date);
+			//date = dateFormatTS.parse(dateFormatTS.format(date));
 			count = txnRefDetails.updateTxnDetails(txn_status, txn_msg, txn_err_msg, tpsl_bank_cd, tpsl_txn_id, txn_amt, 
 														clnt_rqst_meta, date, bal_amt, "null", custName, 
 														BankTransactionID, mandate_reg_no, token, hash, Constants.TXN_TYPE_SUCCESS,
@@ -228,5 +240,14 @@ public class CallbackController {
 			logger.error("Exception1@/callback.updateTxnDetails() :="+e);
 		}
 		return count;
+	}
+	
+	public Date set530HHToDate(Date dt) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dt);
+		cal.add(Calendar.HOUR_OF_DAY, 5);
+		cal.add(Calendar.MINUTE, 30);
+		Date date = cal.getTime();
+		return date;
 	}
 }
