@@ -7,6 +7,7 @@
 	<script src="/js/jquery-1.11.1.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/js/notAllow.js"></script>
 	<title>DHFL Online Payment</title>	
 </head>
 <style>
@@ -93,7 +94,7 @@ img#img_captcha_refresh {
     padding: 2px 0px 2px 0px;
 }
 img#img_captcha {
-    width: 70%;
+    /*width: 70%;*/
     height: 5%;
     margin-top: 1px;
     border-radius: 3px;
@@ -139,7 +140,7 @@ h1 {
     pointer-events: none;
 }
 p{
-	font-size: 1.6rem;
+	font-size: 14px;
     padding: 0;
     color: #3e3e3e;
     opacity: .5;
@@ -337,6 +338,8 @@ body{
 								<script>
 									$('#form_search :input').prop('disabled',true);
 									$('#brLoanCode').prop('disabled', true);
+									$('#mobileNumber').prop('disabled', true);
+									$('#captcha').prop('disabled', true);
 								</script>
 								<div id="otpSentResponse" style="text-align: center; color:green;">${otpSentResponse}</div>
 							</c:if>
@@ -456,7 +459,7 @@ body{
 									class="btn btn-primary mb-2">
 									<span class="" aria-hidden="true">PRINT</span>
 								</button>
-								<button onclick="window.location='/payment';" type="button" id="btn_make_another_pay" class="btn btn-primary mb-2">
+								<button type="button" id="btn_make_another_pay" class="btn btn-primary mb-2">
 									<span class="" aria-hidden="true">MAKE ANOTHER PAYMENT</span>
 								</button>
 							</div>
@@ -500,7 +503,7 @@ body{
 										<td>${loanCode }</td>
 									</tr>
 									<tr>
-										<td>Amount Paid</td>
+										<td>Amount Not Paid</td>
 										<td>${txnAmount}&nbsp;Rs.</td>
 									</tr>
 									<tr>
@@ -525,7 +528,7 @@ body{
 									class="btn btn-primary mb-2">
 									<span class="" aria-hidden="true">Print</span>
 								</button>
-								<button onclick="window.location='/payment';" type="button" id="btn_make_another_pay" class="btn btn-primary mb-2">
+								<button type="button" id="btn_make_another_pay" class="btn btn-primary mb-2">
 									<span class="" aria-hidden="true">MAKE ANOTHER PAYMENT</span>
 								</button>
 							</div>
@@ -719,7 +722,7 @@ body{
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							<strong>Disclaimer </strong>- " If the company desires to indicate 
+							<strong>Disclaimer </strong>- "If the company desires to indicate 
 							directly or indirectly in any advertisement, publicity broucher, etc., 
 							that the company has been granted Certificate of Registration, 
 							such advertisement / broucher should, inter alia, invariably contain 
@@ -774,45 +777,15 @@ body{
     });
     // ------------- Selsction of overdue amount
     $('input[name="amount"]').change(function () {
+    	$('input[name="amount_to_pay1"]').prop('checked', false);
     	setOverDueEmiBlock();
-    	/*$(':input[name="playOverDue"]').prop('disabled', false);
-    	$(':input[name="playOverDueCharge"]').prop('disabled', true);
-    	$("#pay_emi_text").prop('disabled', false);    	
-    	if($('input[name^="amount_to_pay1"]').is(":checked")){
-    		$('input[name^="amount_to_pay1"]').prop('checked', false);
-        }*/
-    	//$('input[id^="amount"]').prop('checked', true);
     });
 	// ------------- Selection of Charges
     $('input[name="amount_to_pay1"]').change(function () {
+    	$('input[name="amount"]').prop('checked', false);
     	setOverDueChargesBlock();
-    	/*$(':input[name="playOverDue"]').prop('disabled', true);
-    	$(':input[name="playOverDueCharge"]').prop('disabled', false);
-    	$("#charge_to_pay").prop('disabled', false);
-    	if($('input[name^="amount"]').is(":checked")){
-    		$('input[id^="amount"]').prop('checked', false);
-        }*/
-    	//$('input[name^="amount_to_pay1"]').prop('checked', true);
     });
     // ----------------
-    /*$('input[id^="pay_emi"]').change(function(){
-    	console.log("Checked pay_emi_text");
-    	$("#pay_emi_text").prop('disabled', false);
-		$(':input[name="playOverDue"]').prop('disabled', false);
-  		$(':input[name="playOverDueCharge"]').prop('disabled', true);
-  		$("#charge_to_pay").prop('disabled', true);
-  		$('input[name^="amount_to_pay1"]').prop('checked', false);
-    });$('input[name^="amount_to_pay1"]').change(function () {
-    	$(':input[name="playOverDueCharge"]').prop('disabled', false);
-    	$(':input[name="playOverDue"]').prop('disabled', true);
-    	$("#charge_to_pay").prop('disabled', false);
-    	$("#pay_emi_text").prop('disabled', true);
-    	$('input[id^="pay_emi"]').prop('checked', false);
-    });*/
-    /*if(!$('input[id^="pay_emi"]').is(':checked')){
-    	$("#charge_to_pay").prop('disabled', true);
-    	$("#pay_emi_text").prop('disabled', true);
-	}*/
 	// -------------- Function type 1 -----------------
   	function setOverDueEmiBlock(){
 		$(':input[name="playOverDue"]').prop('disabled', false);
@@ -822,13 +795,6 @@ body{
   		if($('input[id="pay_emi"]').is(':checked')){
 	    	console.log("Checked pay_emi_text");
 	    	$("#pay_emi_text").prop('disabled', false);
-	    	//$("#charge_to_pay").prop('disabled', true);
-	    	//$(':input[name="playOverDue"]').prop('disabled', false);
-		    /*$('input[name="amount_to_pay"]').keyup(function() {
-		       if($(this).val() != '') {
-		          $(':input[name="playOverDue"]').prop('disabled', false);
-		       }
-		    });*/
 	    }if(!$('input[id="pay_emi"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
@@ -843,51 +809,12 @@ body{
   		if($('input[id="charge_to_pay_r"]').is(':checked')){
 	    	console.log("Checked charge_to_pay");
 	    	$("#charge_to_pay").prop('disabled', false);
-	    	//$("#pay_emi_text").prop('disabled', true);
-	    	//$(':input[name="playOverDueCharge"]').prop('disabled', false);
-		    /*$('input[name="amount_to_pay_charge"]').keyup(function() {
-		       if($(this).val() != '') {
-		          $(':input[name="playOverDueCharge"]').prop('disabled', false);
-		       }
-		    });*/
 	    }if(!$('input[id="charge_to_pay_r"]').is(':checked')){
 	    	$("#charge_to_pay").prop('disabled', true);
 	    	$("#pay_emi_text").prop('disabled', true);
 		}
 	}
 	// ------------------- End of function type 1 ----------------
-
-	function setOverDue(){
-		$(':input[name="playOverDueCharge"]').prop('disabled', true);
-    	$(':input[name="playOverDue"]').prop('disabled', false);
-    	$("#pay_emi_text").prop('disabled', true);
-    	//$('input[name="amount_to_pay1"]').removeAttr('checked');
-    	$('input:radio[name="amount_to_pay1"]').each(function () { $(this).attr('checked', false); });
-    	console.log("Changed overdue radio1");
-    	if($('input[id="pay_emi"]').is(':checked')){
-    		console.log("Selected overdue amount");
-    		$("#pay_emi_text").prop('disabled', false);
-        }if(!$('input[id="pay_emi"]').is(':checked')){
-        	console.log("Not Selected overdue amount");
-    		$("#pay_emi_text").prop('disabled', true);
-        }
-	}function setCharges(){
-		$(':input[name="playOverDueCharge"]').prop('disabled', false);
-    	$(':input[name="playOverDue"]').prop('disabled', true);
-    	$("#charge_to_pay").prop('disabled', true);
-    	//$('input[name="amount"]').removeAttr('checked');
-    	$('input:radio[name="amount"]').each(function () { $(this).attr('checked', false); });
-    	console.log("Changed charges radio1");
-    	if($('input[id="charge_to_pay_r"]').is(':checked')){
-    		console.log("Selected overdue amount");
-    		$("#charge_to_pay").prop('disabled', false);
-        }if(!$('input[id="charge_to_pay_r"]').is(':checked')){
-        	console.log("Not Selected charges amount");
-    		$("#charge_to_pay").prop('disabled', true);
-        }
-	}
-	
-	
 	function printData(divName) {
 		var printContents = document.getElementById(divName).innerHTML;
 		var originalContents = document.body.innerHTML;
@@ -901,31 +828,38 @@ body{
 	})*/
 
 	// Changing Placeholder text
-	$('input[name^="search_param"]').change(
+	$('input[name="search_param"]').change(
 		function() {
-			if ($('input[id^="brLoanCodeParam"]').is(':checked')) {
-				$("input[id^='brLoanCode']").attr('placeholder',
+			if ($('input[id="brLoanCodeParam"]').is(':checked')) {
+				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter 11 digit loan code');
-				$("input[id^='brLoanCode']").attr('maxlength', '11');
+				$("input[id='brLoanCode']").attr('maxlength', '11');
 			}
-			if ($('input[id^="appNoParam"]').is(':checked')) {
-				$("input[id^='brLoanCode']").attr('placeholder',
+			if ($('input[id="appNoParam"]').is(':checked')) {
+				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter Application Number');
-				$("input[id^='brLoanCode']").attr('maxlength', '8');
+				$("input[id='brLoanCode']").attr('maxlength', '8');
 			}
 		});
 	// Refresh Captcha
 	$('#img_captcha_refresh').click(function() {
 		var d = new Date();
-		//console.log("Clicked captcha refresh="+d);
 		$('#img_captcha').attr('src', '/captcha?' + d.getTime());
 	});
 	// onclick resend OTP
 	$("#resendOtpBtn").click(function(){
-		$('#form_search :input').prop('disabled', false);
-		$('input[id^="brLoanCode"]').prop('disabled', false);
+		/*$('#form_search :input').prop('disabled', false);
+		$('input[id="brLoanCode"]').prop('disabled', false);
 		$('#otpValidateForm').empty();
-		$('#otpSentResponse').empty();
+		$('#otpSentResponse').empty();*/
+		$.ajax({url: "/resendOtp", 
+			method : "POST",
+			success: function(result){
+				alert(result);
+			},fail: function(data, error){
+				console.log(data+ " Erro:"+error);
+			}
+		});
 	});
 	// Search Form validation
 
@@ -1010,6 +944,12 @@ body{
 	    //minlength: jQuery.validator.format("Enter amount between maximum and minimum."),
 	    max: jQuery.validator.format("Enter amount between maximum and minimum."),
 	    min: jQuery.validator.format("Enter amount between maximum and minimum.")
+	});
+	// clear search form values
+	$("#btn_make_another_pay").click(function(){
+		window.location='/payment';
+		$('#brLoanCode').val("");
+		$('#mobileNumber').val("");
 	});
 </script>
 <script src="/js/jquery.side-slider.js"></script>
