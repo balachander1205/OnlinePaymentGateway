@@ -264,9 +264,6 @@ body{
 	</nav>
 	<div class="row ">
 		<div class="col-md-12">
-			<!-- <div class="col-md-8">
-    			<h1>Pay Overdue EMI, Charges online</h1>
-			</div> -->
 			<!-- search fields  -->
 			<div class="col-md-4" id="div_search_form">
 				<form id="form_search" method="post" action="/getOtpDetails"
@@ -280,15 +277,16 @@ body{
 									<label for="contain">11 Digit Unique Loan Code</label>
 									<input type="radio" name="search_param" id="appNoParam" value="applno">
 									<label for="contain">Application Number</label> 
-									<input required	class="form-control" id="brLoanCode" type="text"
-										name="brLoanCode" value="${brLoanCode}" placeholder="Enter 11 digit Unique Loan Code" maxlength="11"/>
+									<input onkeypress="return validateNumber(event);" required	class="form-control" id="brLoanCode" type="text"
+										name="brLoanCode" value="${brLoanCode}" placeholder="Enter 11 digit Unique Loan Code" maxlength="11" minlength="11" />
 								</div>
 							</div>							
 							<div class="">
 								<div class="form-group">
 									<label for="contain">Mobile Number *</label> <input required
 										class="form-control" id="mobileNumber" type="text"
-										name="mobileNumber" value="${mobileNumber}" placeholder="Enter Mobile Number" maxlength="10"/>
+										name="mobileNumber" value="${mobileNumber}" placeholder="Enter Mobile Number" maxlength="10" minlength="10" 
+										onkeypress="return validateNumber(event);"/>
 								</div>
 							</div>
 							<div class="">
@@ -298,13 +296,11 @@ body{
 										<img id="img_captcha" src="${pageContext.request.contextPath }/captcha">
 										<img id="img_captcha_refresh" src="images/refresh.png">
 									</div>
-									<!-- <div class="">
-										<img id="img_captcha_refresh" src="images/refresh.png">
-									</div> -->
 									<div class="">
 										<input required="true" class="form-control" id="captcha"
 											type="text" name="captcha" value=""
-											placeholder="Captcha" maxlength="6">
+											placeholder="Captcha" maxlength="6" minlength="6" 
+											onkeypress="return validateNumber(event);" />
 									</div>
 								</div>
 							</div>
@@ -319,18 +315,34 @@ body{
 							</div>
 							<!-- Displaying OTP Unavailable error message -->
 							<c:if test="${noOtpErrormsg !=null}">
+								<script type="text/javascript">
+									var d = new Date();
+									$('#img_captcha').attr('src', '/captcha?' + d.getTime());
+								</script>
 								<div style="text-align: center; color:red;">${noOtpErrormsg}</div>
 							</c:if>
 							<!-- Displaying captcha error message -->
 							<c:if test="${captchaError !=null}">
+								<script type="text/javascript">
+									var d = new Date();
+									$('#img_captcha').attr('src', '/captcha?' + d.getTime());
+								</script>
 								<div style="text-align: center;color:red;">${captchaError}</div>
 							</c:if>
 							<!-- Displaying invalid search error message -->
 							<c:if test="${invalidSearchErrorMsg !=null}">
+								<script type="text/javascript">
+									var d = new Date();
+									$('#img_captcha').attr('src', '/captcha?' + d.getTime());
+								</script>
 								<div style="text-align: center; color:red;">${invalidSearchErrorMsg}</div>
 							</c:if>
 							<!-- Application temporarily unavailable error -->
 							<c:if test="${errorTempUnavailableMsg !=null}">
+								<script type="text/javascript">
+									var d = new Date();
+									$('#img_captcha').attr('src', '/captcha?' + d.getTime());
+								</script>
 								<div style="text-align: center; color:red;">${errorTempUnavailableMsg}</div>
 							</c:if>
 							<!-- Displaying OTP Sent message -->
@@ -340,6 +352,8 @@ body{
 									$('#brLoanCode').prop('disabled', true);
 									$('#mobileNumber').prop('disabled', true);
 									$('#captcha').prop('disabled', true);
+									var d = new Date();
+									$('#img_captcha').attr('src', '/captcha?' + d.getTime());
 								</script>
 								<div id="otpSentResponse" style="text-align: center; color:green;">${otpSentResponse}</div>
 							</c:if>
@@ -368,7 +382,7 @@ body{
 								<div class="">
 									<div class="form-group">
 										<label for="contain">OTP</label><label style="font-size:12px">&nbsp;&nbsp;(Enter OTP sent to mobile.)</label> <input required
-											class="form-control" id="otpData" type="text" name="otpData" maxlength='4' placeholder="Enter OTP"/>
+											class="form-control" id="otpData" type="text" name="otpData" maxlength='4' minlength="4" placeholder="Enter OTP"/>
 									</div>
 								</div>
 								<div class="">
@@ -578,7 +592,7 @@ body{
 						//$('#form_search :input').prop('disabled', true);
 						//$('input[id^="brLoanCode"]').prop('disabled', true);
 					</script>
-					<form class="form-group details_frm" >
+				<form class="form-group details_frm" >
 					<h3 class="box-title">Loan Details</h3>
 					<table class="table">
 						<thead>
@@ -610,6 +624,7 @@ body{
 							</tr>
 						</tbody>
 					</table>
+					<h5 style="color:red;text-align:center">Only one amount to be selected per transaction.</h5>
 				</form>
 			</c:if>
 			</div>
@@ -626,15 +641,15 @@ body{
 			<c:if test="${TotalOverdueEMI != null}">
 				<form method="post" action="/dopayment" class="form-group details_frm" id="form_overdue">
 						<h3 class="box-title">
-							Overdue EMI <label id="lbl_disclaimer" style="color: red">&nbsp;**Only
-								one overdue amount to be selected per transaction</label>
+							Overdue EMI / PEMI<!--  <label id="lbl_disclaimer" style="color: red">&nbsp;**Only
+								one overdue amount to be selected per transaction</label> -->
 						</h3>
 						<table class="table">
 						<thead>
 							<tr>
-								<th scope="col">Total Over Due</th>
-								<th scope="col">Minimum Overdue Amount</th>
-								<th scope="">Amount between Minimum, Total Over Due</th>
+								<th scope="col">Total Amount</th>
+								<th scope="col">Minimum Amount</th>
+								<th scope="">Any amount between minimum and total overdue EMI/ PEMI</th>
 								<th scope=""></th>
 								<th scope=""></th>
 							</tr>
@@ -672,15 +687,15 @@ body{
 			<div class="${divClass}">		
 			<c:if test="${TotalChargesAmount != null}">
 				<form method="post" action="/doPaymentCharge" class="form-group details_frm" id="form_charges">
-						<h3 class="box-title">Charges 
-							<label id="lbl_disclaimer" style="color: red">&nbsp;**Only one charge amount to be
-							selected per transaction</label></h3>
+						<h3 class="box-title">Outstanding Amount 
+							<!-- <label id="lbl_disclaimer" style="color: red">&nbsp;**Only one charge amount to be
+							selected per transaction</label> --></h3>
 						<table class="table">
 						<thead>
 							<tr>
-								<th scope="col">Total Charges Amount</th>
-								<th scope="col">Minimum Charge Amount</th>
-								<th scope="">Amount between Minimum, Total Charges</th>
+								<th scope="col">Total Amount</th>
+								<th scope="col">Minimum Amount</th>
+								<th scope="">Any amount between minimum and total outstanding</th>
 								<th scope=""></th>
 								<th scope=""></th>								
 							</tr>
@@ -722,11 +737,7 @@ body{
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							<strong>Disclaimer </strong>- "If the company desires to indicate 
-							directly or indirectly in any advertisement, publicity broucher, etc., 
-							that the company has been granted Certificate of Registration, 
-							such advertisement / broucher should, inter alia, invariably contain 
-							a statement as under: The Company is having a valid Certificate of
+							<strong>Disclaimer </strong>- "The Company is having a valid Certificate of
 							Registration dated 31/07/2001 issued by the National Housing Bank
 							under Section 29A of the National Housing Bank Act, 1987.
 							However, the National Housing Bank does not accept any
@@ -734,7 +745,7 @@ body{
 							financial soundness of the company or for the correctness of any
 							of the statements or representations made or opinions expressed
 							by the company and for repayment of deposits / discharge of the
-							liabilities by thecompany."
+							liabilities by the company."
 						</p>
 					</div>
 				</div>		
@@ -834,11 +845,13 @@ body{
 				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter 11 digit loan code');
 				$("input[id='brLoanCode']").attr('maxlength', '11');
+				$("input[id='brLoanCode']").attr('minlength', '11');
 			}
 			if ($('input[id="appNoParam"]').is(':checked')) {
 				$("input[id='brLoanCode']").attr('placeholder',
 						'Enter Application Number');
 				$("input[id='brLoanCode']").attr('maxlength', '8');
+				$("input[id='brLoanCode']").attr('minlength', '8');
 			}
 		});
 	// Refresh Captcha
@@ -951,12 +964,18 @@ body{
 		$('#brLoanCode').val("");
 		$('#mobileNumber').val("");
 	});
+	// Validate search fields
+	function validateNumber(evt) {
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+	    if (charCode > 31 && (charCode < 48 || charCode > 57))
+	        return false;
+	    return true;
+	}
 </script>
 <script src="/js/jquery.side-slider.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $('#sideslider').sideSlider();
-
     });
 </script>
 </html>

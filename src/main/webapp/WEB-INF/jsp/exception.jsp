@@ -273,12 +273,7 @@ body {
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							<strong>Disclaimer </strong>- " As regards deposit taking
-							activity of the company, the viewers may refer to the
-							advertisement in the newspaper / information furnished in the
-							application form for soliciting public deposits; published on
-							June 28, 2018 in the Free Press Journal and in Navshakti, Mumbai,
-							respectively. The Company is having a valid Certificate of
+							<strong>Disclaimer </strong>- "The Company is having a valid Certificate of
 							Registration dated 31/07/2001 issued by the National Housing Bank
 							under Section 29A of the National Housing Bank Act, 1987.
 							However, the National Housing Bank does not accept any
@@ -286,7 +281,7 @@ body {
 							financial soundness of the company or for the correctness of any
 							of the statements or representations made or opinions expressed
 							by the company and for repayment of deposits / discharge of the
-							liabilities by thecompany."
+							liabilities by the company."
 
 						</p>
 					</div>
