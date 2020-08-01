@@ -688,8 +688,7 @@ body{
 			<c:if test="${TotalChargesAmount != null}">
 				<form method="post" action="/doPaymentCharge" class="form-group details_frm" id="form_charges">
 						<h3 class="box-title">Outstanding Amount 
-							<!-- <label id="lbl_disclaimer" style="color: red">&nbsp;**Only one charge amount to be
-							selected per transaction</label> --></h3>
+							<label id="lbl_disclaimer">(including Charges / EMI/ PEMI/ Penal Interest/ Charges plus GST as applicable)</label></h3>
 						<table class="table">
 						<thead>
 							<tr>
@@ -843,7 +842,7 @@ body{
 		function() {
 			if ($('input[id="brLoanCodeParam"]').is(':checked')) {
 				$("input[id='brLoanCode']").attr('placeholder',
-						'Enter 11 digit loan code');
+						'Enter 11 digit Unique Loan Code');
 				$("input[id='brLoanCode']").attr('maxlength', '11');
 				$("input[id='brLoanCode']").attr('minlength', '11');
 			}
