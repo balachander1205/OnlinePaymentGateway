@@ -35,8 +35,8 @@ form#form_charges {
     font-weight: 100;
 }
 label#lbl_disclaimer {
-    color: red;
-    font-size: 14px;
+    /* color: red; */
+    font-size: 12px;
     font-weight: 100;
 }
 table.trans_tbl>tbody > tr > td {
@@ -185,7 +185,7 @@ th, td {
 }
 .box-title {
     display: inline-block;
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
     line-height: 1;
     padding-bottom: 5px;
@@ -449,7 +449,7 @@ body{
 										<td>${txnId }</td>
 									</tr>
 									<tr>
-										<td>Loan Code</td>
+										<td>Loan Code / Application Number</td>
 										<td>${loanCode }</td>
 									</tr>
 									<tr>
@@ -513,11 +513,11 @@ body{
 										<td>${txnId }</td>
 									</tr>
 									<tr>
-										<td>Loan Code</td>
+										<td>Loan Code / Application Number</td>
 										<td>${loanCode }</td>
 									</tr>
 									<tr>
-										<td>Amount Not Paid</td>
+										<td>Amount</td>
 										<td>${txnAmount}&nbsp;Rs.</td>
 									</tr>
 									<tr>
@@ -597,7 +597,7 @@ body{
 					<table class="table">
 						<thead>
 							<tr>
-								<th scope="col">Loan Code</th>
+								<th scope="col">Unique Loan Code</th>
 								<th scope="col">Application Number</th>
 								<th scope="col">Customer Name</th>
 								<!-- <th scope="col">Mobile</th> -->
