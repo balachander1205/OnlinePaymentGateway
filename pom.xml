@@ -146,6 +146,11 @@
 			<artifactId>jcc</artifactId>
 			<version>11.5.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.techguy-bhushan</groupId>
+			<artifactId>xss.filter</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

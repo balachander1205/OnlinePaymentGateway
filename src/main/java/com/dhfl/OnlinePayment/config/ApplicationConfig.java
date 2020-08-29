@@ -1,6 +1,7 @@
 package com.dhfl.OnlinePayment.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Configuration
 @Getter
 @Setter
+@ComponentScan("com.xss.filters")
 @PropertySource("classpath:application.properties")
 public class ApplicationConfig {
 	@Value("${app1.exchange.name}")
