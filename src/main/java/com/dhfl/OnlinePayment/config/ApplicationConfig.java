@@ -129,6 +129,28 @@ public class ApplicationConfig {
 	@Value("${pg.trans.invalid.pay.mode}")
 	public String invalidPaymentMode;
 	
+	@Value("${pg.self.tc.document.name}")
+	public String tNCpdfDocName;
+	
+	@Value("${pg.self.tc.document.location}")
+	public String tNCpdfDocLocation;
+	
+	public String gettNCpdfDocName() {
+		return tNCpdfDocName;
+	}
+
+	public void settNCpdfDocName(String tNCpdfDocName) {
+		this.tNCpdfDocName = tNCpdfDocName;
+	}
+
+	public String gettNCpdfDocLocation() {
+		return tNCpdfDocLocation;
+	}
+
+	public void settNCpdfDocLocation(String tNCpdfDocLocation) {
+		this.tNCpdfDocLocation = tNCpdfDocLocation;
+	}
+
 	public String getInvalidPaymentMode() {
 		return invalidPaymentMode;
 	}

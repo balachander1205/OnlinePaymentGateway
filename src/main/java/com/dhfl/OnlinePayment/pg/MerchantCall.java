@@ -13,7 +13,19 @@ import com.tp.pg.util.TransactionResponseBean;
 public class MerchantCall {
 	private static Logger logger = LoggerFactory.getLogger(MerchantCall.class);
 	public static void main(String[] args) {
-		getTxNdetails();
+		String key="3330290559QVHYCU";
+		String iv="8168854229WUSGEL";
+		String originalMessage = "S0QVwfvP9Q+5vAvihEsw4YEWUa9JgkaVUyBVNkRMOOxOfOCrIQy1AklVKxTIXGajktRClCBPAeKa\r\n" + 
+				"rDmJ3lHVQ9/57w9nQA4y5BxqYMblQXuH03OysBD8q0j7RpnjRJUdPLH+b/xl7tfZFZc3Rq3kwhRT\r\n" + 
+				"128Jy13jISjgrfg/8XcyAqnmxjnR94n49HXtIXIZ7L91DDDkGxREwE+k0PthFaOpl3w92YEpfopd\r\n" + 
+				"Z3Qzav7h1cIi4hdLecxkLH63QKIidbSzqP3gyuzr7CWLYjmnZVnFi4FUC/OWmCfJtlRK65c4Thqb\r\n" + 
+				"ZawGXTX+f5zjtD6ZlYxOt0mw35JKRYb6hd8b0pK2jVeB1pyx54xkvHUFxYl/YeO9LMnrM7sddy68\r\n" + 
+				"wDOyWPfQu9oK4WGvvwbCihvIehDqpZFKRn6jKgIPOKOVeNr/BjvajcXeQGM2hFx18DrOGEzDbEfq\r\n" + 
+				"EsjrqxhgyXZrJ1HBsXkX3kizgd3k3n4m37L1SVlETfvoXiybJyXvy9DIwQeyWs0nw0rWB+invHOb\r\n" + 
+				"CQ==";
+		doDecrypt(originalMessage, key, iv);
+		//getTxNdetails();
+		//merchantCall();
 	}
 	public static String doMerchantCall(String mobileNo, String amount, 
 			String key, String iv, String customerName, String loanCode, 
