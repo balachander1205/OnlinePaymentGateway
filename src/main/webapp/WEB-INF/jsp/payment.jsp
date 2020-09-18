@@ -745,7 +745,9 @@ body{
 							financial soundness of the company or for the correctness of any
 							of the statements or representations made or opinions expressed
 							by the company and for repayment of deposits / discharge of the
-							liabilities by the company."
+							liabilities by the company.By proceeding with Click to Pay, Customer 
+							confirms to have read and understood, and further agrees to all the 
+							Terms and Conditions/General Notice on Click to Pay."
 						</p>
 					</div>
 				</div>		
