@@ -240,8 +240,8 @@ public class PaymentController {
 			String otpUrl = applicationConfig.getOtpUrl();
 			String otpMSg = applicationConfig.getOtpMsg();
 			String otpResponse = "";
-			// String otp = SendSmsOTP.getOtp();
-			String otp = "1234";
+			String otp = SendSmsOTP.getOtp();
+			//String otp = "1234";
 			String loancode = getOtpDetailsModel.getBrLoanCode() != null ? getOtpDetailsModel.getBrLoanCode() : "";
 			String appno = getOtpDetailsModel.getBrLoanCode() != null ? getOtpDetailsModel.getBrLoanCode() : "";
 			// getOtpDetailsModel.getApplNo() != null ? getOtpDetailsModel.getApplNo() : "";
