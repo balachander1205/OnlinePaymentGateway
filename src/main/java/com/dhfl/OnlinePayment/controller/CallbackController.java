@@ -120,6 +120,8 @@ public class CallbackController {
 					httpSession.setAttribute("txnAmount", txnAmount);
 					//httpSession.setAttribute("loanCode", CommonUtil.maskString(loancode, 0, 6, 'x'));
 					httpSession.setAttribute("loanCode", loancode);
+					httpSession.setAttribute("custName", custName);
+					httpSession.setAttribute("mobileNo", mobileNumber);
 					if (statusCode.contains(Constants.PG_0300)) {
 						successMsg = applicationConfig.getTranSuccessMsg() + "<br>" + "\n Transaction Time : "
 								+ respObj.getString("tpsl_txn_time") + "<br>" + "\n Transaction ID : "
