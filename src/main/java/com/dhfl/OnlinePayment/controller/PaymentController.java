@@ -316,8 +316,8 @@ public class PaymentController {
 					return redirectView;
 				} else {
 					// send OTP
-					// otpResponse = SendSmsOTP.sendOtpSms(otpData);
-					otpResponse = "200";
+					otpResponse = SendSmsOTP.sendOtpSms(otpData);
+					//otpResponse = "200";
 					httpSession.setAttribute("brLoanCode", data.getBrloancode());
 					httpSession.setAttribute("applNo", data.getApplno());
 					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
