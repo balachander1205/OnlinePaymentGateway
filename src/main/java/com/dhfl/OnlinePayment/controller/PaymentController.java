@@ -32,6 +32,7 @@ import com.dhfl.OnlinePayment.entity.DHFLCustomersEntity;
 import com.dhfl.OnlinePayment.model.DoPaymentChargeModel;
 import com.dhfl.OnlinePayment.model.DoPaymentModel;
 import com.dhfl.OnlinePayment.model.GetOtpDetailsModel;
+import com.dhfl.OnlinePayment.pg.CommonUtil;
 import com.dhfl.OnlinePayment.pg.MerchantCall;
 import com.dhfl.OnlinePayment.pg.SendSmsOTP;
 import com.dhfl.OnlinePayment.rmq.RMqSender;
@@ -396,12 +397,12 @@ public class PaymentController {
 			String custId = (String) httpSession.getAttribute(Constants.KEY_CUST_NAME);
 			String mobileNo = (String) httpSession.getAttribute(Constants.KEY_MOB_NUMBER);
 			String applNo = (String) httpSession.getAttribute("applNo");
-			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, "overdue");
+			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, Constants.TXN_TYPE_OVERDUE);
 
-			Long minAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("minOverDue")) != null
+			Double minAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("minOverDue")) != null
 					? String.valueOf(httpSession.getAttribute("minOverDue"))
 					: "0");
-			Long maxAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("maxOverDue")) != null
+			Double maxAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("maxOverDue")) != null
 					? String.valueOf(httpSession.getAttribute("maxOverDue"))
 					: "0");
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
@@ -431,11 +432,11 @@ public class PaymentController {
 			if (count >= 1) {
 				logger.debug("Transaction Reference Inserted TxnNumber=" + txnNumber + " |Amount=" + amount
 						+ " |mobileNumber=" + mobileNo + " |LoanCode=" + loanCode);
-				// if((Long.parseLong(amount) >= minAmount) &&
-				// (Long.parseLong(amount)<=maxAmount)) {
-				if ((Long.parseLong(amount) <= maxAmount)) {
+				//if((Double.parseDouble(amount) >= minAmount) && (Double.parseDouble(amount)<=maxAmount)) {
+				if ((Double.parseDouble(amount) <= maxAmount)) {
+					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, custId, loanCode,
-							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber);
+							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_OVERDUE, type);
 					logger.debug("Redirecting to Payment=" + paymentUrl + " with amount=" + Float.parseFloat(amount)
 							+ " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);
@@ -499,12 +500,12 @@ public class PaymentController {
 			String applNo = (String) httpSession.getAttribute("applNo");
 			String customerName = (String) httpSession.getAttribute(Constants.KEY_CUST_NAME);
 			String mobileNo = (String) httpSession.getAttribute(Constants.KEY_MOB_NUMBER);
-			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, "charge");
+			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, Constants.TXN_TYPE_CHARGE);
 
-			Long minAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("minChargeDue")) != null
+			Double minAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("minChargeDue")) != null
 					? String.valueOf(httpSession.getAttribute("minChargeDue"))
 					: "0");
-			Long maxAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("maxChargeDue")) != null
+			Double maxAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("maxChargeDue")) != null
 					? String.valueOf(httpSession.getAttribute("maxChargeDue"))
 					: "0");
 			long CURR_TMIES = System.currentTimeMillis();
@@ -531,10 +532,11 @@ public class PaymentController {
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
 					+ "|maxAmount=" + maxAmount + "|Type=charge");
 			if (count >= 1) {
-				// if(Long.parseLong(amount)>=minAmount && Long.parseLong(amount)<=maxAmount) {
-				if (Long.parseLong(amount) <= maxAmount) {
+				//if(Double.parseDouble(amount)>=minAmount && Double.parseDouble(amount)<=maxAmount) {
+				if (Double.parseDouble(amount) <= maxAmount) {
+					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, customerName, loanCode,
-							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber);
+							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_CHARGE, type);
 					logger.debug("Redirecting to Payment=" + paymentUrl + " with amount=" + Float.parseFloat(amount)
 							+ " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);

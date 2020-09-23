@@ -30,7 +30,7 @@ public class MerchantCall {
 	public static String doMerchantCall(String mobileNo, String amount, 
 			String key, String iv, String customerName, String loanCode, 
 			String callbackUrl, String merchantCode, String merchantWebServiceURl,
-			String merchantCur, String txnNumber) {
+			String merchantCur, String txnNumber, String payType, String type) {
 		long CURR_TMIES = System.currentTimeMillis();
 		//String txnNumber = "TXN"+loanCode+String.valueOf(CURR_TMIES);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -39,7 +39,8 @@ public class MerchantCall {
 		
 		logger.info("Transaction Reference Number="+txnNumber);
 		logger.info("Transaction Mobile=" + mobileNo + "|Loan Code=" + loanCode + "|Customer Name=" + customerName
-				+ "|TxnAmount=" + amount + "|MarchentCode=" + merchantCode+"|webServiceUrl="+merchantWebServiceURl);
+				+ "|TxnAmount=" + amount + "|MarchentCode=" + merchantCode+"|webServiceUrl="+merchantWebServiceURl
+				+"| payType="+payType+" | type="+type);
 		TransactionRequestBean objTransactionRequestBean = new TransactionRequestBean();
 		objTransactionRequestBean.setStrRequestType("T");
 		objTransactionRequestBean.setStrMerchantCode(merchantCode);
@@ -47,7 +48,7 @@ public class MerchantCall {
 		// TXN0052134656
 		objTransactionRequestBean.setStrAmount(amount);
 		objTransactionRequestBean.setStrCurrencyCode("INR");
-		objTransactionRequestBean.setStrITC(loanCode);
+		objTransactionRequestBean.setStrITC(loanCode+" - "+payType+" - "+type);
 		//objTransactionRequestBean.setStrReturnURL("https://www.tekprocess.co.in/MerchantIntegrationClient/Responsepayload.jsp");
 		objTransactionRequestBean.setStrReturnURL(callbackUrl);
 		objTransactionRequestBean.setStrS2SReturnURL(callbackUrl);
