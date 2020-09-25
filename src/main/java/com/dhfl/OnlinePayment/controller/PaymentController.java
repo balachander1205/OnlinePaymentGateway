@@ -167,7 +167,7 @@ public class PaymentController {
 									+ appno);
 							redir.addFlashAttribute("TotalOverdueEMI", data.getTotalOverdueEMI());
 							redir.addFlashAttribute("MinimumOverdueAmount", data.getMinimumOverdueAmount());
-							redir.addFlashAttribute("min_amount", 0);
+							redir.addFlashAttribute("min_amount", data.getMinimumOverdueAmount());
 							redir.addFlashAttribute("max_amount", data.getTotalOverdueEMI());
 							redir.addFlashAttribute("amt_info", "Enter amount between " + data.getMinimumOverdueAmount()
 									+ "Rs. - " + data.getTotalOverdueEMI() + "Rs. to do payment.");
@@ -179,7 +179,7 @@ public class PaymentController {
 									+ " |applicationNumber=" + appno);
 							redir.addFlashAttribute("TotalChargesAmount", data.getTotalChargesAmount());
 							redir.addFlashAttribute("MinimumChargeAmount", data.getMinimumChargeAmount());
-							redir.addFlashAttribute("min_amount_charge", 0);
+							redir.addFlashAttribute("min_amount_charge", data.getMinimumChargeAmount());
 							redir.addFlashAttribute("max_amount_charge", data.getTotalChargesAmount());
 							redir.addFlashAttribute("amt_info_charge",
 									"Enter amount between " + data.getMinimumChargeAmount() + "Rs. - "
@@ -432,8 +432,8 @@ public class PaymentController {
 			if (count >= 1) {
 				logger.debug("Transaction Reference Inserted TxnNumber=" + txnNumber + " |Amount=" + amount
 						+ " |mobileNumber=" + mobileNo + " |LoanCode=" + loanCode);
-				//if((Double.parseDouble(amount) >= minAmount) && (Double.parseDouble(amount)<=maxAmount)) {
-				if ((Double.parseDouble(amount) <= maxAmount)) {
+				if((Double.parseDouble(amount) >= minAmount) && (Double.parseDouble(amount)<=maxAmount)) {
+				//if ((Double.parseDouble(amount) <= maxAmount)) {
 					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, custId, loanCode,
 							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_OVERDUE, type);
@@ -513,7 +513,7 @@ public class PaymentController {
 			Date curDate = new Date(CURR_TMIES);
 			int count = 0;
 			try {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
 				Date txnDate = dateFormat.parse(txnFmtDate);
 				System.out.println("Insertion 1..." + count);
@@ -532,8 +532,8 @@ public class PaymentController {
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
 					+ "|maxAmount=" + maxAmount + "|Type=charge");
 			if (count >= 1) {
-				//if(Double.parseDouble(amount)>=minAmount && Double.parseDouble(amount)<=maxAmount) {
-				if (Double.parseDouble(amount) <= maxAmount) {
+				if(Double.parseDouble(amount)>=minAmount && Double.parseDouble(amount)<=maxAmount) {
+				//if (Double.parseDouble(amount) <= maxAmount) {
 					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, customerName, loanCode,
 							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_CHARGE, type);
