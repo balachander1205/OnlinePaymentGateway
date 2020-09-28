@@ -52,7 +52,13 @@ public class MerchantCall {
 		//objTransactionRequestBean.setStrReturnURL("https://www.tekprocess.co.in/MerchantIntegrationClient/Responsepayload.jsp");
 		objTransactionRequestBean.setStrReturnURL(callbackUrl);
 		objTransactionRequestBean.setStrS2SReturnURL(callbackUrl);
-		objTransactionRequestBean.setStrShoppingCartDetails("FIRST_1.0_0.0");
+		// FIRST_1.0_0.0
+		String amountDec = amount;
+		if(!amount.contains(".")) {
+			amountDec = amount+".0";
+		}
+		String schemeCode = "FIRST_"+amountDec+"_0.0";
+		objTransactionRequestBean.setStrShoppingCartDetails(schemeCode);
 		objTransactionRequestBean.setTxnDate(txnDate);
 		//objTransactionRequestBean.setStrBankCode("");
 		objTransactionRequestBean.setWebServiceLocator(merchantWebServiceURl);
@@ -64,7 +70,7 @@ public class MerchantCall {
 		objTransactionRequestBean.setStrCustomerName(customerName);
 		objTransactionRequestBean.setStrEmail("myname@domain.com");
 		String token = objTransactionRequestBean.getTransactionToken();
-	    logger.info("TxnDate="+txnDate+" TxnNumber="+txnNumber+" Payment Token="+token); 
+	    logger.info("TxnDate="+txnDate+" TxnNumber="+txnNumber+" Payment Token="+token+" SchemeCode="+schemeCode); 
 	    return token;
 	}
 	
