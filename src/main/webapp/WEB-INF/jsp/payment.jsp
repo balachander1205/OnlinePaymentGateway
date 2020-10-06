@@ -667,7 +667,7 @@ body{
 								</td>
 								<td>
 									<input type="radio" name="amount" id="pay_emi" value="" />
-										<input required min="${min_amount}" max="${max_amount}" class="form-control" type="number" 
+										<input onchange="setTwoNumberDecimalEMI()" step=".01" required min="${min_amount}" max="${max_amount}" class="form-control" type="number" 
 										name="amount_to_pay" id="pay_emi_text" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />						
 								</td>
 								<td>
@@ -712,7 +712,7 @@ body{
 								</td>
 								<td>
 									<input type="radio" id="charge_to_pay_r" name="amount_to_pay1" value="" />
-										<input required min="${min_amount_charge}" id="charge_to_pay" max="${max_amount_charge}" class="form-control" type="number" 
+										<input onchange="setTwoNumberDecimalCharges()" step=".01" required min="${min_amount_charge}" id="charge_to_pay" max="${max_amount_charge}" class="form-control" type="number" 
 										name="amount_to_pay_charge" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />								
 								</td>
 								<td>
@@ -972,6 +972,15 @@ body{
 	    if (charCode > 31 && (charCode < 48 || charCode > 57))
 	        return false;
 	    return true;
+	}
+
+	// Script to round to two decimals
+	function setTwoNumberDecimalEMI(event) {
+	    var formData = parseFloat($('#pay_emi_text').val()).toFixed(2);
+	  	$('#pay_emi_text').val(formData);
+	}function setTwoNumberDecimalCharges(event) {
+	    var formData = parseFloat($('#charge_to_pay').val()).toFixed(2);
+	  	$('#charge_to_pay').val(formData);
 	}
 </script>
 <script src="/js/jquery.side-slider.js"></script>
