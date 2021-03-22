@@ -1,4 +1,5 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@page buffer="8192kb" autoFlush="true" %>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
