@@ -27,4 +27,21 @@ public class CommonUtil {
 		logger.debug("Masked String value="+maskedStr);
 		return maskedStr;
 	}
+
+	public static String getAmountPayedType(Double minAmount, Double maxAmount, String otherAmount) {
+		String type = "other";
+		try {
+			if (Double.parseDouble(otherAmount) == minAmount) {
+				type = "min";
+			}else if (Long.parseLong(otherAmount) == maxAmount) {
+				type = "max";
+			}else{
+				type = "other";
+			}
+		} catch (Exception e) {
+			logger.debug("Xception@getAmountPayedType=" + e);
+		}
+		logger.debug("User payed amount="+otherAmount+" type="+type);
+		return type;
+	} 
 }

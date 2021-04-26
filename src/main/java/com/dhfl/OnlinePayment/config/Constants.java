@@ -29,7 +29,7 @@ public class Constants {
 	public static final String MSG_INVALID_AMOUNT = "Enter amount between maximum and minimum.";
 	public static final String MSG_INVALID_CAPTCHA = "Invalid Captcha.";
 	public static final String TXN_TYPE_OVERDUE = "overdue";
-	public static final String TXN_TYPE_CHARGE = "charge";
+	public static final String TXN_TYPE_CHARGE = "outstand";
 	public static final String TXN_TYPE_PENDING = "P";
 	public static final String TXN_TYPE_SUCCESS = "S";
 }

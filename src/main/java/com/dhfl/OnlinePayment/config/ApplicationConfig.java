@@ -1,6 +1,7 @@
 package com.dhfl.OnlinePayment.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Configuration
 @Getter
 @Setter
+@ComponentScan("com.xss.filters")
 @PropertySource("classpath:application.properties")
 public class ApplicationConfig {
 	@Value("${app1.exchange.name}")
@@ -127,6 +129,28 @@ public class ApplicationConfig {
 	@Value("${pg.trans.invalid.pay.mode}")
 	public String invalidPaymentMode;
 	
+	@Value("${pg.self.tc.document.name}")
+	public String tNCpdfDocName;
+	
+	@Value("${pg.self.tc.document.location}")
+	public String tNCpdfDocLocation;
+	
+	public String gettNCpdfDocName() {
+		return tNCpdfDocName;
+	}
+
+	public void settNCpdfDocName(String tNCpdfDocName) {
+		this.tNCpdfDocName = tNCpdfDocName;
+	}
+
+	public String gettNCpdfDocLocation() {
+		return tNCpdfDocLocation;
+	}
+
+	public void settNCpdfDocLocation(String tNCpdfDocLocation) {
+		this.tNCpdfDocLocation = tNCpdfDocLocation;
+	}
+
 	public String getInvalidPaymentMode() {
 		return invalidPaymentMode;
 	}

@@ -51,4 +51,30 @@ public class FileDownloadController
             }
         }
     }
+    
+    @RequestMapping(value = "/pdf/tc", method = RequestMethod.GET)
+    @ResponseBody
+    public void downloadTCResource( HttpServletRequest request, 
+                                     HttpServletResponse response) 
+    {
+        String dataDirectory = request.getServletContext().getRealPath(applicationConfig.gettNCpdfDocLocation());
+        dataDirectory = applicationConfig.getPdfDocLocation();
+        System.out.println("T&C PDF Location="+dataDirectory);
+        Path file = Paths.get(dataDirectory, applicationConfig.gettNCpdfDocName());
+        if (Files.exists(file)) 
+        {
+        	System.out.println("T&C File Name="+applicationConfig.gettNCpdfDocName()+"| Doc Type="+applicationConfig.gettNCpdfDocName());
+            response.setContentType(applicationConfig.getPdfDocType());
+            response.addHeader("Content-Disposition", "attachment; filename="+applicationConfig.gettNCpdfDocName());
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            } 
+            catch (Exception ex) {
+                ex.printStackTrace();
+                logger.debug("Exception@/download/pdf/tc="+ex);
+            }
+        }
+    }
 }
