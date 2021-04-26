@@ -106,7 +106,7 @@ public class CallbackController {
 						respObj.put(Constants.KEY_TRANS_TYPE,txnType);
 						respObj.put("mobileNumber",mobileNumber);
 						logger.debug("Queue : " + queue + " Exchange : " + exchange + " Routing Key : " + routingKey);
-						messageSender.sendMessage(rabbitTemplate, exchange, routingKey, respObj.toString());
+						//messageSender.sendMessage(rabbitTemplate, exchange, routingKey, respObj.toString());
 						logger.debug("Updating TxnDetails for TxnID="+txnId);
 						updateTxnDetails(respObj);
 					} catch (Exception e) {
