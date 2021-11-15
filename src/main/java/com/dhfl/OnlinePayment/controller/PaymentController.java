@@ -302,7 +302,8 @@ public class PaymentController {
 				return redirectView;
 			}
 			// End of Captcha validation
-			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp+"%0a%0aDHFL";
+			//String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp+"%0a%0aDHFL";
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp)+"%0a%0aDHFL";
 			System.out.println("OTP Data=" + otpData);
 			boolean isInvalidPayMode = false;
 			// Sending OTP message if data is present in DB
