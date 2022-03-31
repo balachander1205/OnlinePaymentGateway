@@ -303,7 +303,7 @@ public class PaymentController {
 			}
 			// End of Captcha validation
 			//String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp+"%0a%0aDHFL";
-			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp)+"%0a%0aDHFL";
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp);
 			System.out.println("OTP Data=" + otpData);
 			boolean isInvalidPayMode = false;
 			// Sending OTP message if data is present in DB
@@ -585,11 +585,11 @@ public class PaymentController {
 			String otpMSg = applicationConfig.getOtpMsg();
 			String mobileNo = httpSession.getAttribute("mobileNumber") != null
 					? (String) httpSession.getAttribute("mobileNumber")
-					: "8919180283";
+					: "";
 			String otpResponse = "";
 			String otp = SendSmsOTP.getOtp();
 			httpSession.setAttribute("otp", otp);
-			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp+"%0a%0aDHFL";
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp);
 			System.out.println("Resend OTP Data=" + otpData);
 			otpResponse = SendSmsOTP.sendOtpSms(otpData);
 			if (otpResponse.contains("200")) {
