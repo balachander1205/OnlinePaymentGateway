@@ -32,6 +32,7 @@ import com.dhfl.OnlinePayment.entity.DHFLCustomersEntity;
 import com.dhfl.OnlinePayment.model.DoPaymentChargeModel;
 import com.dhfl.OnlinePayment.model.DoPaymentModel;
 import com.dhfl.OnlinePayment.model.GetOtpDetailsModel;
+import com.dhfl.OnlinePayment.pg.CommonUtil;
 import com.dhfl.OnlinePayment.pg.MerchantCall;
 import com.dhfl.OnlinePayment.pg.SendSmsOTP;
 import com.dhfl.OnlinePayment.rmq.RMqSender;
@@ -166,7 +167,7 @@ public class PaymentController {
 									+ appno);
 							redir.addFlashAttribute("TotalOverdueEMI", data.getTotalOverdueEMI());
 							redir.addFlashAttribute("MinimumOverdueAmount", data.getMinimumOverdueAmount());
-							redir.addFlashAttribute("min_amount", 0);
+							redir.addFlashAttribute("min_amount", data.getMinimumOverdueAmount());
 							redir.addFlashAttribute("max_amount", data.getTotalOverdueEMI());
 							redir.addFlashAttribute("amt_info", "Enter amount between " + data.getMinimumOverdueAmount()
 									+ "Rs. - " + data.getTotalOverdueEMI() + "Rs. to do payment.");
@@ -178,7 +179,7 @@ public class PaymentController {
 									+ " |applicationNumber=" + appno);
 							redir.addFlashAttribute("TotalChargesAmount", data.getTotalChargesAmount());
 							redir.addFlashAttribute("MinimumChargeAmount", data.getMinimumChargeAmount());
-							redir.addFlashAttribute("min_amount_charge", 0);
+							redir.addFlashAttribute("min_amount_charge", data.getMinimumChargeAmount());
 							redir.addFlashAttribute("max_amount_charge", data.getTotalChargesAmount());
 							redir.addFlashAttribute("amt_info_charge",
 									"Enter amount between " + data.getMinimumChargeAmount() + "Rs. - "
@@ -240,8 +241,8 @@ public class PaymentController {
 			String otpUrl = applicationConfig.getOtpUrl();
 			String otpMSg = applicationConfig.getOtpMsg();
 			String otpResponse = "";
-			// String otp = SendSmsOTP.getOtp();
-			String otp = "1234";
+			String otp = SendSmsOTP.getOtp();
+			//String otp = "1234";
 			String loancode = getOtpDetailsModel.getBrLoanCode() != null ? getOtpDetailsModel.getBrLoanCode() : "";
 			String appno = getOtpDetailsModel.getBrLoanCode() != null ? getOtpDetailsModel.getBrLoanCode() : "";
 			// getOtpDetailsModel.getApplNo() != null ? getOtpDetailsModel.getApplNo() : "";
@@ -301,7 +302,8 @@ public class PaymentController {
 				return redirectView;
 			}
 			// End of Captcha validation
-			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
+			//String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp+"%0a%0aDHFL";
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp);
 			System.out.println("OTP Data=" + otpData);
 			boolean isInvalidPayMode = false;
 			// Sending OTP message if data is present in DB
@@ -316,8 +318,8 @@ public class PaymentController {
 					return redirectView;
 				} else {
 					// send OTP
-					// otpResponse = SendSmsOTP.sendOtpSms(otpData);
-					otpResponse = "200";
+					otpResponse = SendSmsOTP.sendOtpSms(otpData);
+					//otpResponse = "200";
 					httpSession.setAttribute("brLoanCode", data.getBrloancode());
 					httpSession.setAttribute("applNo", data.getApplno());
 					httpSession.setAttribute(Constants.KEY_MOB_NUMBER, mobileNo);
@@ -396,12 +398,12 @@ public class PaymentController {
 			String custId = (String) httpSession.getAttribute(Constants.KEY_CUST_NAME);
 			String mobileNo = (String) httpSession.getAttribute(Constants.KEY_MOB_NUMBER);
 			String applNo = (String) httpSession.getAttribute("applNo");
-			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, "overdue");
+			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, Constants.TXN_TYPE_OVERDUE);
 
-			Long minAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("minOverDue")) != null
+			Double minAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("minOverDue")) != null
 					? String.valueOf(httpSession.getAttribute("minOverDue"))
 					: "0");
-			Long maxAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("maxOverDue")) != null
+			Double maxAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("maxOverDue")) != null
 					? String.valueOf(httpSession.getAttribute("maxOverDue"))
 					: "0");
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
@@ -431,11 +433,11 @@ public class PaymentController {
 			if (count >= 1) {
 				logger.debug("Transaction Reference Inserted TxnNumber=" + txnNumber + " |Amount=" + amount
 						+ " |mobileNumber=" + mobileNo + " |LoanCode=" + loanCode);
-				// if((Long.parseLong(amount) >= minAmount) &&
-				// (Long.parseLong(amount)<=maxAmount)) {
-				if ((Long.parseLong(amount) <= maxAmount)) {
+				if((Double.parseDouble(amount) >= minAmount) && (Double.parseDouble(amount)<=maxAmount)) {
+				//if ((Double.parseDouble(amount) <= maxAmount)) {
+					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, custId, loanCode,
-							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber);
+							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_OVERDUE, type);
 					logger.debug("Redirecting to Payment=" + paymentUrl + " with amount=" + Float.parseFloat(amount)
 							+ " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);
@@ -499,12 +501,12 @@ public class PaymentController {
 			String applNo = (String) httpSession.getAttribute("applNo");
 			String customerName = (String) httpSession.getAttribute(Constants.KEY_CUST_NAME);
 			String mobileNo = (String) httpSession.getAttribute(Constants.KEY_MOB_NUMBER);
-			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, "charge");
+			httpSession.setAttribute(Constants.KEY_TRANS_TYPE, Constants.TXN_TYPE_CHARGE);
 
-			Long minAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("minChargeDue")) != null
+			Double minAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("minChargeDue")) != null
 					? String.valueOf(httpSession.getAttribute("minChargeDue"))
 					: "0");
-			Long maxAmount = Long.parseLong(String.valueOf(httpSession.getAttribute("maxChargeDue")) != null
+			Double maxAmount = Double.parseDouble(String.valueOf(httpSession.getAttribute("maxChargeDue")) != null
 					? String.valueOf(httpSession.getAttribute("maxChargeDue"))
 					: "0");
 			long CURR_TMIES = System.currentTimeMillis();
@@ -512,7 +514,7 @@ public class PaymentController {
 			Date curDate = new Date(CURR_TMIES);
 			int count = 0;
 			try {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String txnFmtDate = dateFormat.format(curDate);
 				Date txnDate = dateFormat.parse(txnFmtDate);
 				System.out.println("Insertion 1..." + count);
@@ -531,10 +533,11 @@ public class PaymentController {
 			logger.debug("Amount to Pay=" + amount + "|Mobile Number=" + mobileNo + "|minAmount=" + minAmount
 					+ "|maxAmount=" + maxAmount + "|Type=charge");
 			if (count >= 1) {
-				// if(Long.parseLong(amount)>=minAmount && Long.parseLong(amount)<=maxAmount) {
-				if (Long.parseLong(amount) <= maxAmount) {
+				if(Double.parseDouble(amount)>=minAmount && Double.parseDouble(amount)<=maxAmount) {
+				//if (Double.parseDouble(amount) <= maxAmount) {
+					String type = CommonUtil.getAmountPayedType(minAmount, maxAmount, amount);
 					String paymentUrl = MerchantCall.doMerchantCall(mobileNo, amount, key, iv, customerName, loanCode,
-							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber);
+							callbackUrl, merchantCode, merchantWsUrl, merchantCur, txnNumber, Constants.TXN_TYPE_CHARGE, type);
 					logger.debug("Redirecting to Payment=" + paymentUrl + " with amount=" + Float.parseFloat(amount)
 							+ " TxnId=" + txnNumber);
 					redirectView = new RedirectView(paymentUrl, true);
@@ -582,11 +585,11 @@ public class PaymentController {
 			String otpMSg = applicationConfig.getOtpMsg();
 			String mobileNo = httpSession.getAttribute("mobileNumber") != null
 					? (String) httpSession.getAttribute("mobileNumber")
-					: "8919180283";
+					: "";
 			String otpResponse = "";
 			String otp = SendSmsOTP.getOtp();
 			httpSession.setAttribute("otp", otp);
-			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg + "%20" + otp;
+			String otpData = otpUrl + "&to=" + mobileNo + "&text=" + otpMSg.replace("%s", otp);
 			System.out.println("Resend OTP Data=" + otpData);
 			otpResponse = SendSmsOTP.sendOtpSms(otpData);
 			if (otpResponse.contains("200")) {

@@ -1,10 +1,11 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@page buffer="8192kb" autoFlush="true" %>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<link href="/css/font-awesome.css" rel="stylesheet">
 	<link href="/css/side-slider.css" rel="stylesheet">
-	<script src="/js/jquery-1.11.1.min.js"></script>
+	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.validate.min.js"></script>
 	<script src="/js/notAllow.js"></script>
@@ -242,7 +243,7 @@ body{
     <a>
         <div id="sideslider-smartbutton">
             <div id="sideslider-text">
-                <span class="header" style="color: #ed1c24;">Welcome</span>
+                <!-- <span class="header" style="color: #ed1c24;">Welcome</span> -->
                 <a href="/download/pdf/selfcare"><span class="line" style="color:#25408e;"><b>Click to Pay Customer Guide</b></span></a>
                 <a href="/download/pdf/tc"><span class="line" style="color:#25408e;"><b>Click to Pay Terms & Conditions</b></span></a> 
                  <a href="https://www.dhfl.com/contact-us" target="_blank"><span class="line" style="color:#001ffd;"><b>Contact US</b></span></a> 
@@ -666,9 +667,11 @@ body{
 									<input type="hidden" name="MinimumOverdueAmount" value="${MinimumOverdueAmount}"/>
 								</td>
 								<td>
-									<input type="radio" name="amount" id="pay_emi" value="" />
-										<input required min="${min_amount}" max="${max_amount}" class="form-control" type="number" 
-										name="amount_to_pay" id="pay_emi_text" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />						
+									<input type="radio" name="amount" id="pay_emi" value="" />										
+										<input onkeyup="validateDecimal(this);" step=".01" required min="${min_amount}" max="${max_amount}" class="form-control" type="number" 
+										name="amount_to_pay" id="pay_emi_text" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />
+										<%-- <input onchange="setTwoNumberDecimalEMI()" step=".01" required min="${min_amount}" max="${max_amount}" class="form-control" type="number" 
+										name="amount_to_pay" id="pay_emi_text" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" /> --%>						
 								</td>
 								<td>
 									<div class="div_amt_details">
@@ -711,9 +714,11 @@ body{
 									<input type="hidden" name="MinimumChargeAmount" value="${MinimumChargeAmount}" />
 								</td>
 								<td>
-									<input type="radio" id="charge_to_pay_r" name="amount_to_pay1" value="" />
-										<input required min="${min_amount_charge}" id="charge_to_pay" max="${max_amount_charge}" class="form-control" type="number" 
-										name="amount_to_pay_charge" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />								
+									<input type="radio" id="charge_to_pay_r" name="amount_to_pay1" value="" />										
+										<input onkeyup="validateDecimal(this);" step=".01" required min="${min_amount_charge}" id="charge_to_pay" max="${max_amount_charge}" class="form-control" type="number" 
+										name="amount_to_pay_charge" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" />
+										<%-- <input onchange="setTwoNumberDecimalCharges()" step=".01" required min="${min_amount_charge}" id="charge_to_pay" max="${max_amount_charge}" class="form-control" type="number" 
+										name="amount_to_pay_charge" style="display: inherit;width: 50%;" placeholder="Enter Amount to Pay" /> --%>								
 								</td>
 								<td>
 									<div class="div_amt_details">
@@ -972,6 +977,28 @@ body{
 	    if (charCode > 31 && (charCode < 48 || charCode > 57))
 	        return false;
 	    return true;
+	}	
+	// Script to avoid decimal values
+	function validateDecimal(el){
+	 var ex = /^[0-9]*$/;
+	 if(ex.test(el.value)==false){
+	   el.value = el.value.substring(0,el.value.length - 1);
+	  }
+	}
+	// Validate amount to restrict decimal values
+	$("#pay_emi_text, #charge_to_pay").on("keypress keyup blur",function (event) {    
+       $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+	// Script to round to two decimals
+	function setTwoNumberDecimalEMI(event) {
+	    var formData = parseFloat($('#pay_emi_text').val()).toFixed(2);
+	  	$('#pay_emi_text').val(formData);
+	}function setTwoNumberDecimalCharges(event) {
+	    var formData = parseFloat($('#charge_to_pay').val()).toFixed(2);
+	  	$('#charge_to_pay').val(formData);
 	}
 </script>
 <script src="/js/jquery.side-slider.js"></script>
@@ -979,5 +1006,16 @@ body{
     $(document).ready(function(){
         $('#sideslider').sideSlider();
     });
+    (function() {
+        var input = document.getElementById('mobileNumber');
+        var pattern = /^[6-9][0-9]{0,9}$/;
+        var value = input.value;
+        !pattern.test(value) && (input.value = value = '');
+        input.addEventListener('input', function() {
+            var currentValue = this.value;
+            if(currentValue && !pattern.test(currentValue)) this.value = value;
+            else value = currentValue;
+        });
+    })();
 </script>
 </html>

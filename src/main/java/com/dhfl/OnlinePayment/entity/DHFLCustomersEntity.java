@@ -8,7 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_dhfl_customers", schema="DHFLLIVE")
+//@Table(name = "tbl_dhfl_customers", schema="DHFLLIVE")
+@Table(name = "vw_tbl_dhfl_customers", schema="DHFLLIVE")
 //@Table(name = "tbl_dhfl_customers")
 public class DHFLCustomersEntity {
 	@Id
