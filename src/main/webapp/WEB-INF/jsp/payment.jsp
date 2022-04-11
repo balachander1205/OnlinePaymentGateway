@@ -244,8 +244,8 @@ body{
         <div id="sideslider-smartbutton">
             <div id="sideslider-text">
                 <!-- <span class="header" style="color: #ed1c24;">Welcome</span> -->
-                <a href="/download/pdf/selfcare"><span class="line" style="color:#25408e;"><b>Click to Pay Customer Guide</b></span></a>
-                <a href="/download/pdf/tc"><span class="line" style="color:#25408e;"><b>Click to Pay Terms & Conditions</b></span></a> 
+                <!-- a href="/download/pdf/selfcare"><span class="line" style="color:#25408e;"><b>Click to Pay Customer Guide</b></span></a>
+                <a href="/download/pdf/tc"><span class="line" style="color:#25408e;"><b>Click to Pay Terms & Conditions</b></span></a>--> 
                  <a href="https://www.dhfl.com/contact-us" target="_blank"><span class="line" style="color:#001ffd;"><b>Contact US</b></span></a> 
                
             </div>
